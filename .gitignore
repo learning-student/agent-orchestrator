@@ -1,0 +1,8 @@
+# Start Generation Here
+# Node.js application dependencies
+node_modules/
+dist/
+.env
+*.log
+*.tsbuildinfo
+# End Generation Here
