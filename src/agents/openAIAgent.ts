@@ -122,7 +122,6 @@ export class OpenAIAgent extends Agent {
       { role: 'user' as const, content: inputText }
     ] as ConversationMessage[];
 
-    console.log("messages", JSON.stringify(messages, null, 2));
 
     const requestOptions: OpenAI.Chat.ChatCompletionCreateParams = {
       model: this.modelId,

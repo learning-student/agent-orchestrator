@@ -239,8 +239,6 @@ Generate diverse examples covering different aspects of the agent's capabilities
         }
       }
 
-      console.log("User input:", inputText);
-      console.log("bestMatch", bestMatch);
 
       // Check if the best match meets the minimum confidence threshold
       if (bestMatch.similarity < this.minConfidence) {

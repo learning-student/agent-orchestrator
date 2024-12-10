@@ -174,7 +174,6 @@ Your responses must be in following json format always:  {"agentId": "health-age
 
 
   private updateSystemPrompt(): void {
-    console.log("updateSystemPrompt", this.agentDescriptions, this.history);
     const allVariables: TemplateVariables = {
       ...this.customVariables,
       AGENT_DESCRIPTIONS: this.agentDescriptions,

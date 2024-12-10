@@ -247,7 +247,6 @@ export interface AnthropicAgentOptions extends AgentOptions {
     let toolUse = false;
     let recursions = this.toolConfig?.toolMaxRecursions || 5;
 
-    console.log("starting streaming", messages);
     do
     {
       const stream = await this.client.messages.stream({
