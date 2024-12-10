@@ -39,6 +39,7 @@
     "@resolid/keyv-sqlite": "^5.0.1",
     "@types/cache-manager": "^4.0.6",
     "@types/cache-manager-fs-hash": "^0.0.4",
+    "ai": "^4.0.13",
     "axios": "^1.7.2",
     "cache-manager": "^6.3.0",
     "cache-manager-fs-hash": "^2.0.0",
@@ -53,7 +54,8 @@
     "path": "^0.12.7",
     "prettier": "^3.3.3",
     "stopword": "^3.0.1",
-    "stream": "^0.0.3"
+    "stream": "^0.0.3",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
