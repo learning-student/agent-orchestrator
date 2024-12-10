@@ -36,7 +36,6 @@
     "@aws-sdk/client-lex-runtime-v2": "^3.621.0",
     "@aws-sdk/lib-dynamodb": "^3.621.0",
     "@aws-sdk/util-dynamodb": "^3.621.0",
-    "@resolid/keyv-sqlite": "^5.0.1",
     "@types/cache-manager": "^4.0.6",
     "@types/cache-manager-fs-hash": "^0.0.4",
     "ai": "^4.0.13",
