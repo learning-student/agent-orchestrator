@@ -6,6 +6,7 @@ import {
 import { isClassifierToolInput } from "../utils/helpers";
 import { Logger } from "../utils/logger";
 import { Classifier, ClassifierResult } from "./classifier";
+import { ChatCompletionContentPart } from "openai/resources";
 
 export interface OpenAIClassifierOptions {
   // Optional: The ID of the OpenAI model to use for classification
@@ -71,9 +72,13 @@ export class OpenAIClassifier extends Classifier {
    */
   /* eslint-disable @typescript-eslint/no-unused-vars */
   async processRequest(
-    inputText: string,
+    inputText: string | Array<ChatCompletionContentPart>,
     chatHistory: ConversationMessage[]
   ): Promise<ClassifierResult> {
+
+    var input = (typeof inputText === 'string' ? [inputText] : inputText) as ChatCompletionContentPart[];
+    var filteredAndPreparedInput = input.filter(part => part.type === 'text');
+
     const messages: OpenAI.ChatCompletionMessageParam[] = [
       {
         role: 'system',
@@ -81,7 +86,7 @@ export class OpenAIClassifier extends Classifier {
       },
       {
         role: 'user',
-        content: inputText
+        content: filteredAndPreparedInput
       }
     ];
 
