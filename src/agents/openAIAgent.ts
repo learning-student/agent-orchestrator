@@ -231,6 +231,7 @@ export class OpenAIAgent extends Agent {
               if (toolCall.id != selectedToolCallId) {
                 if(selectedToolCallId !== ''){
                   toolBlock.push({ id: selectedToolCallId, input: selectedToolCallInput, name: selectedToolCallName, type: 'tool_use' });
+                  selectedToolCallInput = '';
                 }
                 selectedToolCallId = toolCall.id;
               }
@@ -254,6 +255,7 @@ export class OpenAIAgent extends Agent {
             if (toolBlock.length === 0 && selectedToolCallId !== '') {
               toolBlock.push({ id: selectedToolCallId, input: selectedToolCallInput, name: selectedToolCallName, type: 'tool_use' });
             }
+            console.log('toolBlock', toolBlock);
 
 
             if(toolBlock.length > 0){
