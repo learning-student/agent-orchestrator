@@ -37,6 +37,8 @@ class OpenAIClassifier extends classifier_1.Classifier {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     async processRequest(inputText, chatHistory) {
         var _a, _b;
+        var input = (typeof inputText === 'string' ? [inputText] : inputText);
+        var filteredAndPreparedInput = input.filter(part => part.type === 'text');
         const messages = [
             {
                 role: 'system',
@@ -44,7 +46,7 @@ class OpenAIClassifier extends classifier_1.Classifier {
             },
             {
                 role: 'user',
-                content: inputText
+                content: filteredAndPreparedInput
             }
         ];
         try {

@@ -1,5 +1,6 @@
 import { ConversationMessage } from "../types";
 import { Classifier, ClassifierResult } from "./classifier";
+import { ChatCompletionContentPart } from "openai/resources";
 export interface OpenAIClassifierOptions {
     modelId?: string;
     baseURL?: string;
@@ -29,5 +30,5 @@ export declare class OpenAIClassifier extends Classifier {
      * @param additionalParams - Optional additional parameters as key-value pairs.
      * @returns A Promise that resolves to a Message object containing the agent's response.
      */
-    processRequest(inputText: string, chatHistory: ConversationMessage[]): Promise<ClassifierResult>;
+    processRequest(inputText: string | Array<ChatCompletionContentPart>, chatHistory: ConversationMessage[]): Promise<ClassifierResult>;
 }
