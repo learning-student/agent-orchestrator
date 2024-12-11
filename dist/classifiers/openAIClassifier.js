@@ -61,10 +61,8 @@ class OpenAIClassifier extends classifier_1.Classifier {
                 //tools: this.tools,
                 //tool_choice: "required"
             });
-            console.log("response", response);
             var content = (_b = (_a = response.choices[0]) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.content;
             var prediction = JSON.parse(content);
-            console.log("prediction", prediction);
             const intentClassifierResult = {
                 selectedAgent: this.getAgentById(prediction.agentId),
                 confidence: parseFloat(prediction.confidence)

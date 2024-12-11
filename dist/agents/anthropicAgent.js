@@ -141,7 +141,6 @@ class AnthropicAgent extends agent_1.Agent {
         var _a, _b, _c;
         let toolUse = false;
         let recursions = ((_a = this.toolConfig) === null || _a === void 0 ? void 0 : _a.toolMaxRecursions) || 5;
-        console.log("starting streaming", messages);
         do {
             const stream = await this.client.messages.stream({
                 model: this.modelId,

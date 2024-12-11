@@ -123,7 +123,6 @@ Your responses must be in following json format always:  {"agentId": "health-age
         return await this.processRequest(inputText, chatHistory);
     }
     updateSystemPrompt() {
-        console.log("updateSystemPrompt", this.agentDescriptions, this.history);
         const allVariables = {
             ...this.customVariables,
             AGENT_DESCRIPTIONS: this.agentDescriptions,

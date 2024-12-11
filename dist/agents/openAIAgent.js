@@ -56,7 +56,6 @@ class OpenAIAgent extends agent_1.Agent {
             })),
             { role: 'user', content: inputText }
         ];
-        console.log("messages", JSON.stringify(messages, null, 2));
         const requestOptions = {
             model: this.modelId,
             messages: messages,
