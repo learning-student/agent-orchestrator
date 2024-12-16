@@ -459,8 +459,7 @@ export class MultiAgentOrchestrator {
 
       accumulatorTransform.end();
       this.logger.debug(`Streaming completed: ${chunkCount} chunks received`);
-
-      accumulatorTransform.getAccumulatedData();
+      this.logger.debug("Calling afterAgentDispatch");
       afterAgentDispatch && afterAgentDispatch();
     } catch (error) {
       this.logger.error("Error processing stream:", error);
