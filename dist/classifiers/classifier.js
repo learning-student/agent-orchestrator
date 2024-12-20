@@ -43,25 +43,25 @@ Short confirmations ("yes", "ok") = follow-ups, same agent.
 **Examples:**
 
 - User: "What are the symptoms of the flu?"  
-  {"agentId": "health-agent", "confidence": 0.95}
+  {"agentId": "health-agent", "confidence": 0.95, "reasoning": "The user is asking about the flu, which is a health-related issue. The flu is a common illness that affects the respiratory system, and it is important to get proper treatment for it. The health-agent is the most appropriate agent to handle this request."}
 
 - After printer setup request, user asks: "I need to know my account balance"  
-  {"agentId": "billing-agent", "confidence": 0.9}
+  {"agentId": "billing-agent", "confidence": 0.9, "reasoning": "The user is asking about their account balance, which is a billing-related issue. The billing-agent is the most appropriate agent to handle this request."}
 
 - Follow-up on weight loss advice: "Yes, give me diet tips"  
-  {"agentId": "health-agent", "confidence": 0.95}
+  {"agentId": "health-agent", "confidence": 0.95, "reasoning": "The user is asking for diet tips, which is a health-related issue. The health-agent is the most appropriate agent to handle this request."}
 
 - Follow-up on travel plans: "Can you help me book a flight?"  
-  {"agentId": "travel-agent", "confidence": 0.92}
+  {"agentId": "travel-agent", "confidence": 0.92, "reasoning": "The user is asking to book a flight, which is a travel-related issue. The travel-agent is the most appropriate agent to handle this request."}
 
 - User: "Help me find book a truck"
-  {"agentId": "truck-agent", "confidence": 0.92}
+  {"agentId": "truck-agent", "confidence": 0.92, "reasoning": "The user is asking to book a truck, which is a truck-related issue. The truck-agent is the most appropriate agent to handle this request."}
 
 - Unknown: "I need to know my account balance"  
-  {"agentId": "unknown", "confidence": 0.9}
+  {"agentId": "unknown", "confidence": 0.9, "reasoning": "The user is asking about their account balance, which is a billing-related issue. The billing-agent is the most appropriate agent to handle this request."}
 
 
-Your responses must be in following json format always:  {"agentId": "health-agent", "confidence": 0.95}  
+Your responses must be in following json format always:  {"agentId": "health-agent", "confidence": 0.95, "reasoning": ""}  
 
 ** Available Agents:**
 <agents>
