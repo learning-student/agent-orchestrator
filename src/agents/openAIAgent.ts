@@ -98,7 +98,7 @@ export class OpenAIAgent extends Agent {
   }
 
   async processRequest(
-    inputText: string,
+    inputText: any,
     userId: string,
     sessionId: string,
     chatHistory: ConversationMessage[],
@@ -107,11 +107,19 @@ export class OpenAIAgent extends Agent {
   ): Promise<ConversationMessage | AsyncIterable<any>> {
     let systemPrompt = this.systemPrompt;
 
+    let additionalContext = '';
     if (this.retriever) {
       const response = await this.retriever.retrieveAndCombineResults(inputText, { userId, sessionId });
-      systemPrompt += "\nHere is the context to use to answer the user's question:\n" + response;
+      additionalContext = "\nHere is the context to use to answer the user's question:\n" + response;
     }
 
+    if(typeof inputText === 'string'){
+      inputText += additionalContext;
+    }else if (Array.isArray(inputText)){
+      inputText.map(item => {
+        item.content = item.type == "text" ? item.content + additionalContext : item.content;
+      });
+    }
   
     const messages = [
       { role: 'system' as const, content: systemPrompt },

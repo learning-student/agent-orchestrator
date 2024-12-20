@@ -44,9 +44,18 @@ class OpenAIAgent extends agent_1.Agent {
     async processRequest(inputText, userId, sessionId, chatHistory, additionalParams) {
         var _a, _b, _c, _d, _e;
         let systemPrompt = this.systemPrompt;
+        let additionalContext = '';
         if (this.retriever) {
             const response = await this.retriever.retrieveAndCombineResults(inputText, { userId, sessionId });
-            systemPrompt += "\nHere is the context to use to answer the user's question:\n" + response;
+            additionalContext = "\nHere is the context to use to answer the user's question:\n" + response;
+        }
+        if (typeof inputText === 'string') {
+            inputText += additionalContext;
+        }
+        else if (Array.isArray(inputText)) {
+            inputText.map(item => {
+                item.content = item.type == "text" ? item.content + additionalContext : item.content;
+            });
         }
         const messages = [
             { role: 'system', content: systemPrompt },

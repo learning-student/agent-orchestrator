@@ -43,7 +43,7 @@ export declare class OpenAIAgent extends Agent {
     private customVariables;
     getSystemPrompt(): string;
     constructor(options: OpenAIAgentOptionsWithAuth);
-    processRequest(inputText: string, userId: string, sessionId: string, chatHistory: ConversationMessage[], additionalParams?: Record<string, string>): Promise<ConversationMessage | AsyncIterable<any>>;
+    processRequest(inputText: any, userId: string, sessionId: string, chatHistory: ConversationMessage[], additionalParams?: Record<string, string>): Promise<ConversationMessage | AsyncIterable<any>>;
     private handleSingleResponse;
     private handleStreamingResponse;
     setSystemPrompt(template?: string, variables?: TemplateVariables): void;
