@@ -102,8 +102,8 @@ export class OpenAIClassifier extends Classifier {
         prediction: {
           content: '{"agentId": "", "confidence": 0, "reasoning": ""}',
           type: 'content'
-        }
-        //tools: this.tools,
+        },
+                //tools: this.tools,
         //tool_choice: "required"
       });
 
