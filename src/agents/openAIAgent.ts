@@ -117,7 +117,7 @@ export class OpenAIAgent extends Agent {
       inputText += additionalContext;
     }else if (Array.isArray(inputText)){
       inputText.map(item => {
-        item.content = item.type == "text" ? item.content + additionalContext : item.content;
+        item.text = item.type == "text" ? item.text + additionalContext : item.text;
       });
     }
   
