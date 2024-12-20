@@ -110,6 +110,7 @@ export class OpenAIClassifier extends Classifier {
       var content = response.choices[0]?.message?.content;
       var prediction = JSON.parse(content);
 
+      console.log('prediction result', prediction);
       const intentClassifierResult: ClassifierResult = {
         selectedAgent: this.getAgentById(prediction.agentId),
         confidence: parseFloat(prediction.confidence)
