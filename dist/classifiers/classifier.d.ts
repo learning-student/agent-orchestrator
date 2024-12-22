@@ -17,6 +17,7 @@ export declare abstract class Classifier {
     protected promptTemplate: string;
     protected systemPrompt: string;
     protected customVariables: TemplateVariables;
+    protected instructions: string;
     /**
      * Constructs a new Classifier instance.
      * @param options - Configuration options for the agent, inherited from AgentOptions.
@@ -26,6 +27,8 @@ export declare abstract class Classifier {
         [key: string]: Agent;
     }): void;
     setHistory(messages: ConversationMessage[]): void;
+    setInstructions(instructions: string): void;
+    getInstructions(): string;
     setSystemPrompt(template?: string, variables?: TemplateVariables): void;
     private formatMessages;
     /**

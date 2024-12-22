@@ -3,6 +3,7 @@ import { ConversationMessage, TemplateVariables } from '../types';
 import OpenAI from 'openai';
 import { Retriever } from '../retrievers/retriever';
 export interface OpenAIAgentOptions extends AgentOptions {
+    baseURL?: string;
     modelId?: string;
     streaming?: boolean;
     toolConfig?: {

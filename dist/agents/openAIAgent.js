@@ -22,7 +22,7 @@ class OpenAIAgent extends agent_1.Agent {
         else {
             if (!options.apiKey)
                 throw new Error('OpenAI API key is required');
-            this.openai = new openai_1.default({ apiKey: options.apiKey });
+            this.openai = new openai_1.default({ apiKey: options.apiKey, baseURL: options.baseURL });
         }
         this.modelId = (_a = options.modelId) !== null && _a !== void 0 ? _a : types_1.OPENAI_MODEL_ID_GPT_O_MINI;
         this.streaming = (_b = options.streaming) !== null && _b !== void 0 ? _b : false;

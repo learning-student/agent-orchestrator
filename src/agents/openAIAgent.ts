@@ -5,6 +5,7 @@ import { Logger } from '../utils/logger';
 import { Retriever } from '../retrievers/retriever';
 
 export interface OpenAIAgentOptions extends AgentOptions {
+  baseURL?: string;
   modelId?: string;
   streaming?: boolean;
   toolConfig?: {
@@ -70,7 +71,7 @@ export class OpenAIAgent extends Agent {
       this.openai = options.client;
     } else {
       if (!options.apiKey) throw new Error('OpenAI API key is required');
-      this.openai = new OpenAI({ apiKey: options.apiKey });
+      this.openai = new OpenAI({ apiKey: options.apiKey, baseURL: options.baseURL });
     }
 
     this.modelId = options.modelId ?? OPENAI_MODEL_ID_GPT_O_MINI;

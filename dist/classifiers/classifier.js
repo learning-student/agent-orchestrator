@@ -65,6 +65,10 @@ Analyze the user's input through multiple dimensions to determine the optimal ag
    - Authority level needed
    - Regulatory compliance
 
+   ** USER DEFINED INSTRUCTIONS **
+   {{INSTRUCTIONS}}
+   You must follow the user defined instructions as always before making any decisions.
+
 **Detailed Examples with Reasoning:**
 
 - Query: "What's the difference between a box truck and a straight truck?"
@@ -88,7 +92,7 @@ Your response must strictly follow this JSON format:
 <history>
 {{HISTORY}}
 </history>
-
+// /*  */
 ** User Input: {{USER_INPUT}} **
 `;
     }
@@ -101,6 +105,12 @@ Your response must strictly follow this JSON format:
     }
     setHistory(messages) {
         this.history = this.formatMessages(messages);
+    }
+    setInstructions(instructions) {
+        this.instructions = instructions;
+    }
+    getInstructions() {
+        return this.instructions;
     }
     setSystemPrompt(template, variables) {
         if (template) {
@@ -143,6 +153,7 @@ Your response must strictly follow this JSON format:
             ...this.customVariables,
             AGENT_DESCRIPTIONS: this.agentDescriptions,
             HISTORY: this.history,
+            INSTRUCTIONS: this.instructions,
         };
         this.systemPrompt = this.replaceplaceholders(this.promptTemplate, allVariables);
     }
