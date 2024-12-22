@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnthropicClassifier = void 0;
 const types_1 = require("../types");
-const helpers_1 = require("../utils/helpers");
 const logger_1 = require("../utils/logger");
 const classifier_1 = require("./classifier");
 const sdk_1 = require("@anthropic-ai/sdk");
@@ -10,30 +9,6 @@ class AnthropicClassifier extends classifier_1.Classifier {
     constructor(options) {
         var _a, _b, _c, _d, _e;
         super();
-        this.tools = [
-            {
-                name: 'analyzePrompt',
-                description: 'Analyze the user input and provide structured output',
-                input_schema: {
-                    type: 'object',
-                    properties: {
-                        userinput: {
-                            type: 'string',
-                            description: 'The original user input',
-                        },
-                        selected_agent: {
-                            type: 'string',
-                            description: 'The name of the selected agent',
-                        },
-                        confidence: {
-                            type: 'number',
-                            description: 'Confidence level between 0 and 1',
-                        },
-                    },
-                    required: ['userinput', 'selected_agent', 'confidence'],
-                },
-            },
-        ];
         if (!options.apiKey) {
             throw new Error("Anthropic API key is required");
         }
@@ -64,19 +39,15 @@ class AnthropicClassifier extends classifier_1.Classifier {
                 system: this.systemPrompt,
                 temperature: this.inferenceConfig.temperature,
                 top_p: this.inferenceConfig.topP,
-                tools: this.tools
             });
-            const toolUse = response.content.find((content) => content.type === "tool_use");
-            if (!toolUse) {
-                throw new Error("No tool use found in the response");
-            }
-            if (!(0, helpers_1.isClassifierToolInput)(toolUse.input)) {
-                throw new Error("Tool input does not match expected structure");
-            }
+            var content = response.content.find(item => item.type === 'text');
+            var jsonMatch = content.text.match(/({.*?})/);
+            var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+            console.log('prediction result', prediction);
             // Create and return IntentClassifierResult
             const intentClassifierResult = {
-                selectedAgent: this.getAgentById(toolUse.input.selected_agent),
-                confidence: parseFloat(toolUse.input.confidence),
+                selectedAgent: this.getAgentById(prediction.agentId),
+                confidence: parseFloat(prediction.confidence),
             };
             return intentClassifierResult;
         }

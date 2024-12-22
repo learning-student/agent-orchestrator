@@ -43,31 +43,6 @@ export class AnthropicClassifier extends Classifier {
     stopSequences?: string[];
   };
 
-  private tools: Anthropic.Tool[] = [
-    {
-      name: 'analyzePrompt',
-      description: 'Analyze the user input and provide structured output',
-      input_schema: {
-        type: 'object',
-        properties: {
-          userinput: {
-            type: 'string',
-            description: 'The original user input',
-          },
-          selected_agent: {
-            type: 'string',
-            description: 'The name of the selected agent',
-          },
-          confidence: {
-            type: 'number',
-            description: 'Confidence level between 0 and 1',
-          },
-        },
-        required: ['userinput', 'selected_agent', 'confidence'],
-      },
-    },
-  ];
-
 
   constructor(options: AnthropicClassifierOptions) {
     super();
@@ -108,26 +83,19 @@ async processRequest(
         system: this.systemPrompt,
         temperature: this.inferenceConfig.temperature,
         top_p: this.inferenceConfig.topP,
-        tools: this.tools
+      
       });
 
-      const toolUse = response.content.find(
-        (content): content is Anthropic.ToolUseBlock => content.type === "tool_use"
-      );
+      var content = response.content.find(item => item.type === 'text');
+      var jsonMatch = content.text.match(/({.*?})/);
+      var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
 
-      if (!toolUse) {
-        throw new Error("No tool use found in the response");
-      }
-
-      if (!isClassifierToolInput(toolUse.input)) {
-        throw new Error("Tool input does not match expected structure");
-      }
-
+      console.log('prediction result', prediction);
 
       // Create and return IntentClassifierResult
       const intentClassifierResult: ClassifierResult = {
-        selectedAgent: this.getAgentById(toolUse.input.selected_agent),
-        confidence: parseFloat(toolUse.input.confidence),
+        selectedAgent: this.getAgentById(prediction.agentId),
+        confidence: parseFloat(prediction.confidence),
       };
       return intentClassifierResult;
 

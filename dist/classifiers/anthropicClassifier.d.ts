@@ -18,7 +18,6 @@ export declare class AnthropicClassifier extends Classifier {
         topP?: number;
         stopSequences?: string[];
     };
-    private tools;
     constructor(options: AnthropicClassifierOptions);
     processRequest(inputText: string, chatHistory: ConversationMessage[]): Promise<ClassifierResult>;
 }
