@@ -90,7 +90,6 @@ async processRequest(
       var jsonMatch = content.text.match(/({.*?})/);
       var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
 
-      console.log('prediction result', prediction);
 
       // Create and return IntentClassifierResult
       const intentClassifierResult: ClassifierResult = {

@@ -108,20 +108,11 @@ export class OpenAIAgent extends Agent {
   ): Promise<ConversationMessage | AsyncIterable<any>> {
     let systemPrompt = this.systemPrompt;
 
-    let additionalContext = '';
     if (this.retriever) {
       const response = await this.retriever.retrieveAndCombineResults(inputText, { userId, sessionId });
-      additionalContext = "\nHere is the context to use to answer the user's question:\n" + response;
+      systemPrompt += "\nHere is the context to use to answer the user's question:\n" + response;
     }
 
-    if(typeof inputText === 'string'){
-      inputText += additionalContext;
-    }else if (Array.isArray(inputText)){
-      inputText.map(item => {
-        item.text = item.type == "text" ? item.text + additionalContext : item.text;
-      });
-    }
-  
     const messages = [
       { role: 'system' as const, content: systemPrompt },
       ...chatHistory.map(msg => ({
