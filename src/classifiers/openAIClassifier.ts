@@ -90,7 +90,8 @@ export class OpenAIClassifier extends Classifier {
       }
     ];
 
-
+   console.log("promot for classifier", this.systemPrompt);
+   
 
     try {
       const response = await this.client.chat.completions.create({
