@@ -110,6 +110,7 @@ export class OpenAIClassifier extends Classifier {
       var content = response.choices[0]?.message?.content;
       var jsonMatch = content.match(/({.*?})/);
       var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+      console.log("prediction", prediction);
 
       const intentClassifierResult: ClassifierResult = {
         selectedAgent: this.getAgentById(prediction.agentId),

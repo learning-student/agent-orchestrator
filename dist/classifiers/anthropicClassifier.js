@@ -43,7 +43,6 @@ class AnthropicClassifier extends classifier_1.Classifier {
             var content = response.content.find(item => item.type === 'text');
             var jsonMatch = content.text.match(/({.*?})/);
             var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
-            console.log('prediction result', prediction);
             // Create and return IntentClassifierResult
             const intentClassifierResult = {
                 selectedAgent: this.getAgentById(prediction.agentId),
