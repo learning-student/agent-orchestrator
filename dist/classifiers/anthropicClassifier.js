@@ -40,9 +40,12 @@ class AnthropicClassifier extends classifier_1.Classifier {
                 temperature: this.inferenceConfig.temperature,
                 top_p: this.inferenceConfig.topP,
             });
+            console.log("response", response);
             var content = response.content.find(item => item.type === 'text');
+            console.log("content", content.text);
             var jsonMatch = content.text.match(/({[\s\S]*?})/);
             var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+            console.log("prediction", prediction);
             // Create and return IntentClassifierResult
             const intentClassifierResult = {
                 selectedAgent: this.getAgentById(prediction.agentId),
