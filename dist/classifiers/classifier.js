@@ -43,7 +43,7 @@ You must return the selection in the following format:
     }
     setAgents(agents) {
         const agentDescriptions = Object.entries(agents)
-            .map(([_key, agent]) => `Agent: ${agent.name} ${agent.id} ${agent.description}`)
+            .map(([_key, agent]) => `Agent => Name: ${agent.name} Id: ${agent.id} Description: ${agent.description}`)
             .join("\n\n");
         this.agentDescriptions = agentDescriptions;
         this.agents = agents;
