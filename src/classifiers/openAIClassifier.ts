@@ -108,6 +108,7 @@ export class OpenAIClassifier extends Classifier {
       });
 
       var content = response.choices[0]?.message?.content;
+      console.log("prediction content", content);
       var jsonMatch = content.match(/({.*?})/);
       var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
       console.log("prediction", prediction);
