@@ -64,7 +64,8 @@ class OpenAIClassifier extends classifier_1.Classifier {
                 //tool_choice: "required"
             });
             var content = (_b = (_a = response.choices[0]) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.content;
-            var jsonMatch = content.match(/({.*?})/);
+            console.log("prediction content", content);
+            var jsonMatch = content.match(/({[\s\S]*?})/);
             var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
             console.log("prediction", prediction);
             const intentClassifierResult = {
