@@ -1,4 +1,5 @@
 export { OpenAIAgent, OpenAIAgentOptions } from './agents/openAIAgent';
+export { OllamaAgent, OllamaAgentOptions } from './agents/ollamaAgent';
 export { AnthropicAgent, AnthropicAgentOptions, AnthropicAgentOptionsWithAuth } from './agents/anthropicAgent';
 export { Agent, AgentOptions } from './agents/agent';
 export { Classifier, ClassifierResult } from './classifiers/classifier';
@@ -8,7 +9,8 @@ export { AgentResponse } from './agents/agent';
 
 export { AnthropicClassifier, AnthropicClassifierOptions } from './classifiers/anthropicClassifier';
 export { OpenAIClassifier, OpenAIClassifierOptions } from "./classifiers/openAIClassifier"
-
+export { EmbeddingClassifier, EmbeddingClassifierOptions } from "./classifiers/embeddingClassifier"
+export { OllamaClassifier, OllamaClassifierOptions } from "./classifiers/ollamaClassifier"
 export { Retriever } from './retrievers/retriever';
 export { RetrievalOptions } from './retrievers/retriieverOptions';
 
@@ -23,4 +25,3 @@ export { AgentOverlapAnalyzer, AnalysisResult } from "./agentOverlapAnalyzer";
 export { ConversationMessage, ParticipantRole } from "./types"
 
 export { isClassifierToolInput } from './utils/helpers'
-export {EmbeddingClassifier} from "./classifiers/embeddingClassifier"
