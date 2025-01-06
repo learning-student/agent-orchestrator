@@ -9,14 +9,14 @@ const classifier_1 = require("./classifier");
 const md5_1 = __importDefault(require("crypto-js/md5"));
 class EmbeddingClassifier extends classifier_1.Classifier {
     constructor(options) {
-        var _a, _b;
+        var _a;
         super();
         this.agentEmbeddings = new Map();
         this.registeredAgents = new Map();
         this.exampleEmbeddings = new Map();
         this.openai = options.openaiClient;
         this.minConfidence = (_a = options.minConfidence) !== null && _a !== void 0 ? _a : 0.7;
-        this.model = (_b = options.model) !== null && _b !== void 0 ? _b : "text-embedding-3-small";
+        this.embeddingCreator = options.embeddingCreator;
     }
     /**
      * Generate example Q&As for an agent using its description and system prompt
@@ -32,7 +32,10 @@ Capabilities: ${agent.name} is designed to ${agent.description}
 Generate diverse examples covering different aspects of the agent's capabilities.`;
             const response = await this.openai.chat.completions.create({
                 model: "gpt-4o-mini",
-                messages: [{ role: "user", content: prompt }],
+                messages: [
+                    { role: "system", content: "You are a helpful assistant that generates example question-answer pairs for an agent based on its description and capabilities." },
+                    { role: "user", content: prompt }
+                ],
                 temperature: 0.7,
                 tool_choice: "required",
                 tools: [
@@ -108,19 +111,7 @@ Generate diverse examples covering different aspects of the agent's capabilities
      * Get embedding for a text using OpenAI's API with caching
      */
     async getEmbedding(text) {
-        try {
-            // Get from API if not in cache
-            const response = await this.openai.embeddings.create({
-                model: this.model,
-                input: text,
-            });
-            const embedding = response.data[0].embedding;
-            return embedding;
-        }
-        catch (error) {
-            logger_1.Logger.logger.error("Error getting embedding:", error);
-            throw error;
-        }
+        return this.embeddingCreator(text);
     }
     /**
      * Update embeddings for all registered agents
@@ -180,6 +171,7 @@ Generate diverse examples covering different aspects of the agent's capabilities
                     bestMatch = { agentId, similarity: score };
                 }
             }
+            console.log("bestMatch", bestMatch);
             // Check if the best match meets the minimum confidence threshold
             if (bestMatch.similarity < this.minConfidence) {
                 throw new Error("No agent matched with sufficient confidence");

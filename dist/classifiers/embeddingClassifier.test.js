@@ -123,6 +123,13 @@ describe('EmbeddingClassifier E2E Tests', () => {
         // Initialize classifier with real settings
         const options = {
             openaiClient: openai,
+            embeddingCreator: async (text) => {
+                const response = await openai.embeddings.create({
+                    model: 'text-embedding-ada-002',
+                    input: text,
+                });
+                return response.data[0].embedding;
+            },
             minConfidence: 0.6, // Lower threshold for edge cases
             model: 'text-embedding-ada-002',
             cacheOptions: {

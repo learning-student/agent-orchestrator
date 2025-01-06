@@ -15,6 +15,7 @@ interface AgentInfo {
 
 export interface EmbeddingClassifierOptions {
   openaiClient: OpenAI;
+  embeddingCreator: (text: string) => Promise<number[]>;
   // Minimum confidence threshold for classification (0-1)
   minConfidence?: number;
   // Model to use for embeddings (defaults to text-embedding-3-small)
@@ -30,16 +31,16 @@ export interface EmbeddingClassifierOptions {
 export class EmbeddingClassifier extends Classifier {
   private openai: OpenAI;
   private minConfidence: number;
-  private model: string;
   private agentEmbeddings: Map<string, number[]> = new Map();
   private registeredAgents: Map<string, Agent> = new Map();
   private exampleEmbeddings: Map<string, number[]> = new Map();
+  private embeddingCreator: (text: string) => Promise<number[]>;
 
   constructor(options: EmbeddingClassifierOptions) {
     super();
     this.openai = options.openaiClient;
     this.minConfidence = options.minConfidence ?? 0.7;
-    this.model = options.model ?? "text-embedding-3-small";
+    this.embeddingCreator = options.embeddingCreator;
   }
 
   /**
@@ -56,7 +57,10 @@ Generate diverse examples covering different aspects of the agent's capabilities
 
       const response = await this.openai.chat.completions.create({
         model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
+        messages: [
+          { role: "system", content: "You are a helpful assistant that generates example question-answer pairs for an agent based on its description and capabilities." },
+          { role: "user", content: prompt }
+        ],
         temperature: 0.7,
         tool_choice: "required",
         tools: [
@@ -144,22 +148,7 @@ Generate diverse examples covering different aspects of the agent's capabilities
    * Get embedding for a text using OpenAI's API with caching
    */
   private async getEmbedding(text: string): Promise<number[]> {
-    try {
-     
-      // Get from API if not in cache
-      const response = await this.openai.embeddings.create({
-        model: this.model,
-        input: text,
-      });
-
-      const embedding = response.data[0].embedding;
-
-    
-      return embedding;
-    } catch (error) {
-      Logger.logger.error("Error getting embedding:", error);
-      throw error;
-    }
+    return this.embeddingCreator(text);
   }
 
   /**
@@ -234,6 +223,7 @@ Generate diverse examples covering different aspects of the agent's capabilities
         }
       }
 
+      console.log("bestMatch", bestMatch);  
 
       // Check if the best match meets the minimum confidence threshold
       if (bestMatch.similarity < this.minConfidence) {

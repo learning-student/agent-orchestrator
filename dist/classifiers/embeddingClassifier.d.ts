@@ -4,6 +4,7 @@ import { Agent } from "../agents/agent";
 import OpenAI from "openai";
 export interface EmbeddingClassifierOptions {
     openaiClient: OpenAI;
+    embeddingCreator: (text: string) => Promise<number[]>;
     minConfidence?: number;
     model?: string;
     cacheOptions?: {
@@ -15,10 +16,10 @@ export interface EmbeddingClassifierOptions {
 export declare class EmbeddingClassifier extends Classifier {
     private openai;
     private minConfidence;
-    private model;
     private agentEmbeddings;
     private registeredAgents;
     private exampleEmbeddings;
+    private embeddingCreator;
     constructor(options: EmbeddingClassifierOptions);
     /**
      * Generate example Q&As for an agent using its description and system prompt
