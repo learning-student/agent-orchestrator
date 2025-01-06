@@ -1,5 +1,4 @@
 export { OpenAIAgent, OpenAIAgentOptions } from './agents/openAIAgent';
-export { OllamaAgent, OllamaAgentOptions } from './agents/ollamaAgent';
 export { AnthropicAgent, AnthropicAgentOptions, AnthropicAgentOptionsWithAuth } from './agents/anthropicAgent';
 export { Agent, AgentOptions } from './agents/agent';
 export { Classifier, ClassifierResult } from './classifiers/classifier';

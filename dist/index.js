@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isClassifierToolInput = exports.ParticipantRole = exports.AgentOverlapAnalyzer = exports.MultiAgentOrchestrator = exports.Logger = exports.InMemoryChatStorage = exports.ChatStorage = exports.Retriever = exports.OllamaClassifier = exports.EmbeddingClassifier = exports.OpenAIClassifier = exports.AnthropicClassifier = exports.ChainAgent = exports.Classifier = exports.Agent = exports.AnthropicAgent = exports.OllamaAgent = exports.OpenAIAgent = void 0;
+exports.isClassifierToolInput = exports.ParticipantRole = exports.AgentOverlapAnalyzer = exports.MultiAgentOrchestrator = exports.Logger = exports.InMemoryChatStorage = exports.ChatStorage = exports.Retriever = exports.OllamaClassifier = exports.EmbeddingClassifier = exports.OpenAIClassifier = exports.AnthropicClassifier = exports.ChainAgent = exports.Classifier = exports.Agent = exports.AnthropicAgent = exports.OpenAIAgent = void 0;
 var openAIAgent_1 = require("./agents/openAIAgent");
 Object.defineProperty(exports, "OpenAIAgent", { enumerable: true, get: function () { return openAIAgent_1.OpenAIAgent; } });
-var ollamaAgent_1 = require("./agents/ollamaAgent");
-Object.defineProperty(exports, "OllamaAgent", { enumerable: true, get: function () { return ollamaAgent_1.OllamaAgent; } });
 var anthropicAgent_1 = require("./agents/anthropicAgent");
 Object.defineProperty(exports, "AnthropicAgent", { enumerable: true, get: function () { return anthropicAgent_1.AnthropicAgent; } });
 var agent_1 = require("./agents/agent");
