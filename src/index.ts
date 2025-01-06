@@ -9,7 +9,6 @@ export { AgentResponse } from './agents/agent';
 export { AnthropicClassifier, AnthropicClassifierOptions } from './classifiers/anthropicClassifier';
 export { OpenAIClassifier, OpenAIClassifierOptions } from "./classifiers/openAIClassifier"
 export { EmbeddingClassifier, EmbeddingClassifierOptions } from "./classifiers/embeddingClassifier"
-export { OllamaClassifier, OllamaClassifierOptions } from "./classifiers/ollamaClassifier"
 export { Retriever } from './retrievers/retriever';
 export { RetrievalOptions } from './retrievers/retriieverOptions';
 
