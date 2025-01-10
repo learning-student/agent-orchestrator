@@ -57,12 +57,6 @@ class OpenAIClassifier extends classifier_1.Classifier {
                 max_tokens: this.inferenceConfig.maxTokens,
                 temperature: this.inferenceConfig.temperature,
                 top_p: this.inferenceConfig.topP,
-                prediction: {
-                    content: '{"agentId": "", "confidence": 0}',
-                    type: 'content'
-                },
-                //tools: this.tools,
-                //tool_choice: "required"
             });
             var content = (_b = (_a = response.choices[0]) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.content;
             console.log("prediction content", content);
