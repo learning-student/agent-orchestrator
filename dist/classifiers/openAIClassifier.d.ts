@@ -1,7 +1,9 @@
+import OpenAI from "openai";
 import { ConversationMessage } from "../types";
 import { Classifier, ClassifierResult } from "./classifier";
 import { ChatCompletionContentPart } from "openai/resources";
 export interface OpenAIClassifierOptions {
+    client?: OpenAI;
     modelId?: string;
     baseURL?: string;
     inferenceConfig?: {

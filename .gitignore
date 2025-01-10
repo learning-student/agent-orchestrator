@@ -6,3 +6,5 @@ dist/
 *.log
 *.tsbuildinfo
 # End Generation Here
+
+project-status.md

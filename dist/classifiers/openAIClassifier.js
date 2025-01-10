@@ -15,7 +15,7 @@ class OpenAIClassifier extends classifier_1.Classifier {
         if (!options.apiKey) {
             throw new Error("OpenAI API key is required");
         }
-        this.client = new openai_1.default({ apiKey: options.apiKey, baseURL: options.baseURL });
+        this.client = options.client || new openai_1.default({ apiKey: options.apiKey, baseURL: options.baseURL });
         this.modelId = options.modelId || types_1.OPENAI_MODEL_ID_GPT_O_MINI;
         const defaultMaxTokens = 1000;
         this.inferenceConfig = {

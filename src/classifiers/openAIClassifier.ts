@@ -11,6 +11,7 @@ import { ChatCompletionContentPart } from "openai/resources";
 export interface OpenAIClassifierOptions {
   // Optional: The ID of the OpenAI model to use for classification
   // If not provided, a default model may be used
+  client?: OpenAI;
   modelId?: string;
 
   baseURL?: string;
@@ -49,7 +50,7 @@ export class OpenAIClassifier extends Classifier {
     if (!options.apiKey) {
       throw new Error("OpenAI API key is required");
     }
-    this.client = new OpenAI({ apiKey: options.apiKey, baseURL: options.baseURL });
+    this.client = options.client || new OpenAI({ apiKey: options.apiKey, baseURL: options.baseURL });
     this.modelId = options.modelId || OPENAI_MODEL_ID_GPT_O_MINI;
 
     const defaultMaxTokens = 1000;
