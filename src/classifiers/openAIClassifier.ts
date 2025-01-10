@@ -101,7 +101,7 @@ export class OpenAIClassifier extends Classifier {
         temperature: this.inferenceConfig.temperature,
         top_p: this.inferenceConfig.topP,
         prediction: {
-          content: '{"agentId": "", "confidence": 0, "reasoning": ""}',
+          content: '{"agentId": "", "confidence": 0}',
           type: 'content'
         },
                 //tools: this.tools,
