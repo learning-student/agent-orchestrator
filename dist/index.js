@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isClassifierToolInput = exports.ParticipantRole = exports.AgentOverlapAnalyzer = exports.MultiAgentOrchestrator = exports.Logger = exports.InMemoryChatStorage = exports.ChatStorage = exports.Retriever = exports.EmbeddingClassifier = exports.OpenAIClassifier = exports.AnthropicClassifier = exports.ChainAgent = exports.Classifier = exports.Agent = exports.AnthropicAgent = exports.OpenAIAgent = void 0;
+exports.isClassifierToolInput = exports.ParticipantRole = exports.AgentOverlapAnalyzer = exports.MultiAgentOrchestrator = exports.Logger = exports.InMemoryChatStorage = exports.ChatStorage = exports.Retriever = exports.EmbeddingClassifier = exports.OpenAIClassifier = exports.AnthropicClassifier = exports.OllamaClassifier = exports.OllamaAgent = exports.ChainAgent = exports.Classifier = exports.Agent = exports.AnthropicAgent = exports.OpenAIAgent = void 0;
 var openAIAgent_1 = require("./agents/openAIAgent");
 Object.defineProperty(exports, "OpenAIAgent", { enumerable: true, get: function () { return openAIAgent_1.OpenAIAgent; } });
 var anthropicAgent_1 = require("./agents/anthropicAgent");
@@ -11,6 +11,10 @@ var classifier_1 = require("./classifiers/classifier");
 Object.defineProperty(exports, "Classifier", { enumerable: true, get: function () { return classifier_1.Classifier; } });
 var chainAgent_1 = require("./agents/chainAgent");
 Object.defineProperty(exports, "ChainAgent", { enumerable: true, get: function () { return chainAgent_1.ChainAgent; } });
+var ollamaAgent_1 = require("./agents/ollamaAgent");
+Object.defineProperty(exports, "OllamaAgent", { enumerable: true, get: function () { return ollamaAgent_1.OllamaAgent; } });
+var ollamaClassifier_1 = require("./classifiers/ollamaClassifier");
+Object.defineProperty(exports, "OllamaClassifier", { enumerable: true, get: function () { return ollamaClassifier_1.OllamaClassifier; } });
 var anthropicClassifier_1 = require("./classifiers/anthropicClassifier");
 Object.defineProperty(exports, "AnthropicClassifier", { enumerable: true, get: function () { return anthropicClassifier_1.AnthropicClassifier; } });
 var openAIClassifier_1 = require("./classifiers/openAIClassifier");
