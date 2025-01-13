@@ -276,7 +276,7 @@ export class OpenAIAgent extends Agent {
             // Add a system message to continue
             messages.push({
               role: ParticipantRole.USER,
-              content: [{ text: 'Please continue where you left off, do not repeat the same information. Continue where you exactly left off.', type: 'text' }]
+              content: [{ text: 'Please continue where you exactly left off, do not repeat the same information. Start directly with new information. Never say anything else before.', type: 'text' }]
             });
             
             // Update options with new messages
