@@ -14,7 +14,7 @@ class OpenAIAgent extends agent_1.Agent {
         return this.systemPrompt;
     }
     constructor(options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         super(options);
         if (options.client) {
             this.openai = options.client;
@@ -31,6 +31,7 @@ class OpenAIAgent extends agent_1.Agent {
             temperature: (_f = (_e = options.inferenceConfig) === null || _e === void 0 ? void 0 : _e.temperature) !== null && _f !== void 0 ? _f : 0.1,
             topP: (_h = (_g = options.inferenceConfig) === null || _g === void 0 ? void 0 : _g.topP) !== null && _h !== void 0 ? _h : 0.9,
             stopSequences: (_j = options.inferenceConfig) === null || _j === void 0 ? void 0 : _j.stopSequences,
+            continueOnLength: (_l = (_k = options.inferenceConfig) === null || _k === void 0 ? void 0 : _k.continueOnLength) !== null && _l !== void 0 ? _l : false
         };
         this.retriever = options.retriever;
         this.toolConfig = options.toolConfig;
@@ -130,6 +131,8 @@ class OpenAIAgent extends agent_1.Agent {
             let toolUse = false;
             let recursions = ((_a = this.toolConfig) === null || _a === void 0 ? void 0 : _a.toolMaxRecursions) || 5;
             let toolBlock = [];
+            let continueGenerating = true;
+            let accumulatedContent = '';
             var selectedToolCallId = '';
             var selectedToolCallName = '';
             var selectedToolCallInput = '';
@@ -139,7 +142,9 @@ class OpenAIAgent extends agent_1.Agent {
                     console.log("chunk", chunk);
                     const content = (_c = (_b = chunk.choices[0]) === null || _b === void 0 ? void 0 : _b.delta) === null || _c === void 0 ? void 0 : _c.content;
                     const toolCalls = (_e = (_d = chunk.choices[0]) === null || _d === void 0 ? void 0 : _d.delta) === null || _e === void 0 ? void 0 : _e.tool_calls;
+                    const finishReason = (_f = chunk.choices[0]) === null || _f === void 0 ? void 0 : _f.finish_reason;
                     if (content) {
+                        accumulatedContent += content;
                         yield content;
                     }
                     if (toolCalls && toolCalls.length > 0) {
@@ -160,8 +165,6 @@ class OpenAIAgent extends agent_1.Agent {
                             selectedToolCallInput += toolCall.function.arguments;
                         }
                     }
-                    var finishReason = (_f = chunk.choices[0]) === null || _f === void 0 ? void 0 : _f.finish_reason;
-                    console.log("finishReason", finishReason);
                     if (finishReason === 'tool_calls') {
                         if (toolBlock.length === 0 && selectedToolCallId !== '') {
                             toolBlock.push({ id: selectedToolCallId, input: selectedToolCallInput, name: selectedToolCallName, type: 'tool_use' });
@@ -177,9 +180,28 @@ class OpenAIAgent extends agent_1.Agent {
                         }
                         toolUse = true;
                     }
+                    else if (finishReason === 'length' && this.inferenceConfig.continueOnLength) {
+                        // Add the accumulated content as an assistant message
+                        messages.push({
+                            role: types_1.ParticipantRole.ASSISTANT,
+                            content: [{ text: accumulatedContent }]
+                        });
+                        // Add a system message to continue
+                        messages.push({
+                            role: types_1.ParticipantRole.USER,
+                            content: [{ text: 'Please con tinue where you left off.' }]
+                        });
+                        // Update options with new messages
+                        options.messages = messages;
+                        continueGenerating = true;
+                        break;
+                    }
+                    else if (finishReason) {
+                        continueGenerating = false;
+                    }
                 }
                 recursions--;
-            } while (toolUse && recursions > 0);
+            } while ((toolUse || continueGenerating) && recursions > 0);
         }
         catch (error) {
             logger_1.Logger.logger.error('Error in streaming OpenAI API call:', error);

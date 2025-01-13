@@ -16,6 +16,7 @@ export interface OpenAIAgentOptions extends AgentOptions {
         temperature?: number;
         topP?: number;
         stopSequences?: string[];
+        continueOnLength?: boolean;
     };
     retriever?: Retriever;
     customSystemPrompt?: {
