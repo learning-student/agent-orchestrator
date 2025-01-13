@@ -3,10 +3,8 @@ export { AnthropicAgent, AnthropicAgentOptions, AnthropicAgentOptionsWithAuth } 
 export { Agent, AgentOptions } from './agents/agent';
 export { Classifier, ClassifierResult } from './classifiers/classifier';
 export { ChainAgent, ChainAgentOptions } from './agents/chainAgent';
-export { OllamaAgent, OllamaAgentOptions } from './agents/ollamaAgent';
 export { AgentResponse } from './agents/agent';
 
-export { OllamaClassifier, OllamaClassifierOptions } from './classifiers/ollamaClassifier';
 export { AnthropicClassifier, AnthropicClassifierOptions } from './classifiers/anthropicClassifier';
 export { OpenAIClassifier, OpenAIClassifierOptions } from "./classifiers/openAIClassifier"
 export { EmbeddingClassifier, EmbeddingClassifierOptions } from "./classifiers/embeddingClassifier"
