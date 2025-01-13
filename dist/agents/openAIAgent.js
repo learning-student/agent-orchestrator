@@ -136,6 +136,7 @@ class OpenAIAgent extends agent_1.Agent {
             do {
                 const stream = await this.openai.chat.completions.create({ ...options, stream: true });
                 for await (const chunk of stream) {
+                    console.log("chunk", chunk);
                     const content = (_c = (_b = chunk.choices[0]) === null || _b === void 0 ? void 0 : _b.delta) === null || _c === void 0 ? void 0 : _c.content;
                     const toolCalls = (_e = (_d = chunk.choices[0]) === null || _d === void 0 ? void 0 : _d.delta) === null || _e === void 0 ? void 0 : _e.tool_calls;
                     if (content) {
