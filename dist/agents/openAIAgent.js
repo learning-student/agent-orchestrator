@@ -189,7 +189,7 @@ class OpenAIAgent extends agent_1.Agent {
                         // Add a system message to continue
                         messages.push({
                             role: types_1.ParticipantRole.USER,
-                            content: [{ text: 'You cut off your message with finishReason:length. Now please continue where you left off. Start right after where you left off.', type: 'text' }]
+                            content: [{ text: 'You cut off your message with finishReason:length. Now please continue where you left off. Start right after where you left off. Dont use senteces like: "Certainly, here is the continuation of my previous message."', type: 'text' }]
                         });
                         // Update options with new messages
                         options.messages = messages;
