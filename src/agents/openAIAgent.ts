@@ -270,13 +270,13 @@ export class OpenAIAgent extends Agent {
             // Add the accumulated content as an assistant message
             messages.push({
               role: ParticipantRole.ASSISTANT,
-              content: [{ text: accumulatedContent }]
+              content: [{ text: accumulatedContent, type: 'text' }]
             });
             
             // Add a system message to continue
             messages.push({
               role: ParticipantRole.USER,
-              content: [{ text: 'Please con tinue where you left off.' }]
+              content: [{ text: 'Please continue where you left off, do not repeat the same information. Continue where you exactly left off.', type: 'text' }]
             });
             
             // Update options with new messages
