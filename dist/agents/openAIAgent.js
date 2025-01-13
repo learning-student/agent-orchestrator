@@ -125,7 +125,7 @@ class OpenAIAgent extends agent_1.Agent {
         }
     }
     async *handleStreamingResponse(messages, options) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         try {
             let toolUse = false;
             let recursions = ((_a = this.toolConfig) === null || _a === void 0 ? void 0 : _a.toolMaxRecursions) || 5;
@@ -160,7 +160,8 @@ class OpenAIAgent extends agent_1.Agent {
                             selectedToolCallInput += toolCall.function.arguments;
                         }
                     }
-                    var finishReason = chunk.choices[0].finish_reason;
+                    var finishReason = (_f = chunk.choices[0]) === null || _f === void 0 ? void 0 : _f.finish_reason;
+                    console.log("finishReason", finishReason);
                     if (finishReason === 'tool_calls') {
                         if (toolBlock.length === 0 && selectedToolCallId !== '') {
                             toolBlock.push({ id: selectedToolCallId, input: selectedToolCallInput, name: selectedToolCallName, type: 'tool_use' });

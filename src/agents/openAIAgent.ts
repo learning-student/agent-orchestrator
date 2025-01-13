@@ -248,9 +248,9 @@ export class OpenAIAgent extends Agent {
             }
           }
 
-          var finishReason = chunk.choices[0].finish_reason;
+          var finishReason = chunk.choices[0]?.finish_reason;
 
-
+          console.log("finishReason", finishReason);
           if (finishReason === 'tool_calls') {
 
             if (toolBlock.length === 0 && selectedToolCallId !== '') {
