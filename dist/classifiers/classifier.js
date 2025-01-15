@@ -13,6 +13,7 @@ class Classifier {
         this.agentDescriptions = "";
         this.history = "";
         this.customVariables = {};
+        this.textProcessor = (text) => text;
         this.promptTemplate = `
 
 You are AgentMatcher, an expert system designed to intelligently match user queries to the most appropriate specialized agent by performing deep semantic analysis.
@@ -66,12 +67,13 @@ Then you must return the following json:**
         this.updateSystemPrompt();
     }
     formatMessages(messages) {
-        return messages
+        const response = messages
             .map((message) => {
             const texts = message.content.map((content) => content.text).join(" ");
             return `${message.role}: ${texts}`;
         })
             .join("\n");
+        return this.textProcessor(response);
     }
     /**
    * Classifies the input text based on the provided chat history.

@@ -14,6 +14,7 @@ export interface ClassifierResult {
   confidence: number;
 }
 
+export type TextProcessor = (text: string) => string;
 /**
  * Abstract base class for all classifiers
  */
@@ -27,7 +28,7 @@ export abstract class Classifier {
   protected systemPrompt: string;
   protected customVariables: TemplateVariables;
   protected instructions: string;
-
+  protected textProcessor : TextProcessor;
 
 
   /**
@@ -39,6 +40,7 @@ export abstract class Classifier {
     this.agentDescriptions = "";
     this.history = "";
     this.customVariables = {};
+    this.textProcessor = (text: string) => text;
     this.promptTemplate = `
 
 You are AgentMatcher, an expert system designed to intelligently match user queries to the most appropriate specialized agent by performing deep semantic analysis.
@@ -100,12 +102,14 @@ Then you must return the following json:**
   }
 
   private formatMessages(messages: ConversationMessage[]): string {
-    return messages
+    const response =  messages
       .map((message) => {
         const texts = message.content.map((content) => content.text).join(" ");
         return `${message.role}: ${texts}`;
       })
       .join("\n");
+
+    return this.textProcessor(response);
   }
 
 

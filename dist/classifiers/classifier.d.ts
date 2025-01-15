@@ -4,6 +4,7 @@ export interface ClassifierResult {
     selectedAgent: Agent | null;
     confidence: number;
 }
+export type TextProcessor = (text: string) => string;
 /**
  * Abstract base class for all classifiers
  */
@@ -18,6 +19,7 @@ export declare abstract class Classifier {
     protected systemPrompt: string;
     protected customVariables: TemplateVariables;
     protected instructions: string;
+    protected textProcessor: TextProcessor;
     /**
      * Constructs a new Classifier instance.
      * @param options - Configuration options for the agent, inherited from AgentOptions.
