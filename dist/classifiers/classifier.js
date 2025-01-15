@@ -75,6 +75,9 @@ Then you must return the following json:**
             .join("\n");
         return this.textProcessor(response);
     }
+    setTextProcessor(textProcessor) {
+        this.textProcessor = textProcessor;
+    }
     /**
    * Classifies the input text based on the provided chat history.
    *

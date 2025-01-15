@@ -33,6 +33,7 @@ export declare abstract class Classifier {
     getInstructions(): string;
     setSystemPrompt(template?: string, variables?: TemplateVariables): void;
     private formatMessages;
+    setTextProcessor(textProcessor: TextProcessor): void;
     /**
    * Classifies the input text based on the provided chat history.
    *

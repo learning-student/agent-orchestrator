@@ -113,6 +113,9 @@ Then you must return the following json:**
   }
 
 
+   setTextProcessor(textProcessor: TextProcessor): void {
+    this.textProcessor = textProcessor;
+   }
     /**
    * Classifies the input text based on the provided chat history.
    *
