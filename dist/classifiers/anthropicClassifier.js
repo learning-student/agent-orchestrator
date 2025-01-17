@@ -52,6 +52,12 @@ class AnthropicClassifier extends classifier_1.Classifier {
         }
         catch (error) {
             logger_1.Logger.logger.error("Error processing request:", error);
+            if (this.errorAgent) {
+                return {
+                    selectedAgent: this.errorAgent,
+                    confidence: 1
+                };
+            }
             // Instead of returning a default result, we'll throw the error
             throw error;
         }

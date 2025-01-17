@@ -29,6 +29,7 @@ export abstract class Classifier {
   protected customVariables: TemplateVariables;
   protected instructions: string;
   protected textProcessor : TextProcessor;
+  protected errorAgent ?: Agent;
 
 
   /**
@@ -41,6 +42,7 @@ export abstract class Classifier {
     this.history = "";
     this.customVariables = {};
     this.textProcessor = (text: string) => text;
+    this.errorAgent = null;
     this.promptTemplate = `
 
 You are AgentMatcher, an expert system designed to intelligently match user queries to the most appropriate specialized agent by performing deep semantic analysis.
@@ -67,6 +69,10 @@ Then you must return the following json:**
 // /*  */
 ** User Input: {{USER_INPUT}} **
 `;
+  }
+
+  setErrorAgent(errorAgent: Agent): void {
+    this.errorAgent = errorAgent;
   }
 
   setAgents(agents: { [key: string]: Agent }) {

@@ -7,7 +7,7 @@ import { AccumulatorTransform } from "./utils/helpers";
 import { Logger } from "./utils/logger";
 import { Classifier } from "./classifiers/classifier";
 
-type ErrorHandler = (error: Error) => Promise<AsyncIterable<any>>;
+export type ErrorHandler = (error: Error) => Promise<AsyncIterable<any>>;
 
 export interface OrchestratorConfig {
   /** If true, logs the chat interactions with the agent */

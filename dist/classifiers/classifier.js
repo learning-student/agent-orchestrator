@@ -14,6 +14,7 @@ class Classifier {
         this.history = "";
         this.customVariables = {};
         this.textProcessor = (text) => text;
+        this.errorAgent = null;
         this.promptTemplate = `
 
 You are AgentMatcher, an expert system designed to intelligently match user queries to the most appropriate specialized agent by performing deep semantic analysis.
@@ -40,6 +41,9 @@ Then you must return the following json:**
 // /*  */
 ** User Input: {{USER_INPUT}} **
 `;
+    }
+    setErrorAgent(errorAgent) {
+        this.errorAgent = errorAgent;
     }
     setAgents(agents) {
         const agentDescriptions = Object.entries(agents)

@@ -20,11 +20,13 @@ export declare abstract class Classifier {
     protected customVariables: TemplateVariables;
     protected instructions: string;
     protected textProcessor: TextProcessor;
+    protected errorAgent?: Agent;
     /**
      * Constructs a new Classifier instance.
      * @param options - Configuration options for the agent, inherited from AgentOptions.
      */
     constructor();
+    setErrorAgent(errorAgent: Agent): void;
     setAgents(agents: {
         [key: string]: Agent;
     }): void;

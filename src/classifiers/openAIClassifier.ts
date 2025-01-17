@@ -116,6 +116,13 @@ export class OpenAIClassifier extends Classifier {
 
     } catch (error) {
       Logger.logger.error("Error processing request:", error);
+      if (this.errorAgent) {
+        return {
+          selectedAgent: this.errorAgent,
+          confidence: 1
+        }
+      }
+      
       throw error;
     }
   }

@@ -69,6 +69,12 @@ class OpenAIClassifier extends classifier_1.Classifier {
         }
         catch (error) {
             logger_1.Logger.logger.error("Error processing request:", error);
+            if (this.errorAgent) {
+                return {
+                    selectedAgent: this.errorAgent,
+                    confidence: 1
+                };
+            }
             throw error;
         }
     }
