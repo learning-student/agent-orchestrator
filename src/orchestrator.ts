@@ -7,7 +7,7 @@ import { AccumulatorTransform } from "./utils/helpers";
 import { Logger } from "./utils/logger";
 import { Classifier } from "./classifiers/classifier";
 
-type ErrorHandler = (error: Error) => void;
+type ErrorHandler = (error: Error) => AsyncIterable<any>;
 
 export interface OrchestratorConfig {
   /** If true, logs the chat interactions with the agent */
@@ -469,15 +469,24 @@ export class MultiAgentOrchestrator {
       afterAgentDispatch && afterAgentDispatch();
     } catch (error) {
       this.logger.error("Error processing stream:", error);
-      this.errorHandler && this.errorHandler(error);
-      accumulatorTransform.end();
-      if (error instanceof Error) {
-        accumulatorTransform.destroy(error);
-      } else if (typeof error === "string") {
-        accumulatorTransform.destroy(new Error(error));
-      } else {
-        accumulatorTransform.destroy(new Error("An unknown error occurred"));
+      if(this.errorHandler) {
+          for await (const chunk of this.errorHandler(error)) {
+            accumulatorTransform.write(chunk);
+            chunkCount++;
+          }
+          accumulatorTransform.end();
+          afterAgentDispatch && afterAgentDispatch();
+      }else{
+        accumulatorTransform.end();
+        if (error instanceof Error) {
+          accumulatorTransform.destroy(error);
+        } else if (typeof error === "string") {
+          accumulatorTransform.destroy(new Error(error));
+        } else {
+          accumulatorTransform.destroy(new Error("An unknown error occurred"));
+        }
       }
+
     }
   }
 
@@ -539,6 +548,13 @@ export class MultiAgentOrchestrator {
   }
 
   private getFallbackResult(): ClassifierResult {
+    return {
+      selectedAgent: this.getDefaultAgent(),
+      confidence: 0,
+    };
+  }
+}
+
     return {
       selectedAgent: this.getDefaultAgent(),
       confidence: 0,
