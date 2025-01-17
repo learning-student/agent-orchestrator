@@ -7,6 +7,8 @@ import { AccumulatorTransform } from "./utils/helpers";
 import { Logger } from "./utils/logger";
 import { Classifier } from "./classifiers/classifier";
 
+type ErrorHandler = (error: Error) => void;
+
 export interface OrchestratorConfig {
   /** If true, logs the chat interactions with the agent */
   LOG_AGENT_CHAT?: boolean;
@@ -150,6 +152,7 @@ export interface OrchestratorOptions {
   logger?: any;
   classifier?: Classifier;
   defaultAgent?: Agent;
+  errorHandler?: ErrorHandler;
 }
 
 export interface RequestMetadata {
@@ -186,7 +189,7 @@ export class MultiAgentOrchestrator {
   private executionTimes: Map<string, number>;
   private logger: Logger;
   private defaultAgent: Agent;
-
+  private errorHandler ?: ErrorHandler;
 
   constructor(options: OrchestratorOptions = {}) {
     this.storage = options.storage || new InMemoryChatStorage();
@@ -228,8 +231,13 @@ export class MultiAgentOrchestrator {
     this.classifier = options.classifier;
 
     this.defaultAgent = options.defaultAgent;
-
+    this.errorHandler = options.errorHandler;
   }
+
+  setErrorHandler(errorHandler: ErrorHandler): void {
+    this.errorHandler = errorHandler;
+  }
+
 
   analyzeAgentOverlap(): void {
     const agents = this.getAllAgents();
@@ -461,6 +469,7 @@ export class MultiAgentOrchestrator {
       afterAgentDispatch && afterAgentDispatch();
     } catch (error) {
       this.logger.error("Error processing stream:", error);
+      this.errorHandler && this.errorHandler(error);
       accumulatorTransform.end();
       if (error instanceof Error) {
         accumulatorTransform.destroy(error);

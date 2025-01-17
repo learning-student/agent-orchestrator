@@ -52,6 +52,10 @@ class MultiAgentOrchestrator {
         this.agents = {};
         this.classifier = options.classifier;
         this.defaultAgent = options.defaultAgent;
+        this.errorHandler = options.errorHandler;
+    }
+    setErrorHandler(errorHandler) {
+        this.errorHandler = errorHandler;
     }
     analyzeAgentOverlap() {
         const agents = this.getAllAgents();
@@ -215,6 +219,7 @@ class MultiAgentOrchestrator {
         }
         catch (error) {
             this.logger.error("Error processing stream:", error);
+            this.errorHandler && this.errorHandler(error);
             accumulatorTransform.end();
             if (error instanceof Error) {
                 accumulatorTransform.destroy(error);

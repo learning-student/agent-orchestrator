@@ -2,6 +2,7 @@ import { Agent, AgentResponse } from "./agents/agent";
 import { ClassifierResult } from './classifiers/classifier';
 import { ChatStorage } from "./storage/chatStorage";
 import { Classifier } from "./classifiers/classifier";
+type ErrorHandler = (error: Error) => void;
 export interface OrchestratorConfig {
     /** If true, logs the chat interactions with the agent */
     LOG_AGENT_CHAT?: boolean;
@@ -89,6 +90,7 @@ export interface OrchestratorOptions {
     logger?: any;
     classifier?: Classifier;
     defaultAgent?: Agent;
+    errorHandler?: ErrorHandler;
 }
 export interface RequestMetadata {
     userInput: string;
@@ -107,7 +109,9 @@ export declare class MultiAgentOrchestrator {
     private executionTimes;
     private logger;
     private defaultAgent;
+    private errorHandler?;
     constructor(options?: OrchestratorOptions);
+    setErrorHandler(errorHandler: ErrorHandler): void;
     analyzeAgentOverlap(): void;
     addAgent(agent: Agent): void;
     getDefaultAgent(): Agent;
@@ -127,3 +131,4 @@ export declare class MultiAgentOrchestrator {
     private createMetadata;
     private getFallbackResult;
 }
+export {};
