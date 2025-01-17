@@ -220,7 +220,8 @@ class MultiAgentOrchestrator {
         catch (error) {
             this.logger.error("Error processing stream:", error);
             if (this.errorHandler) {
-                for await (const chunk of this.errorHandler(error)) {
+                const errorStream = await this.errorHandler(error);
+                for await (const chunk of errorStream) {
                     accumulatorTransform.write(chunk);
                     chunkCount++;
                 }
