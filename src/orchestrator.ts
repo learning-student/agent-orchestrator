@@ -364,6 +364,10 @@ export class MultiAgentOrchestrator {
           () => this.classifier.classify(userInput, chatHistory)
         );
 
+        if (classifierResult.modifiedInputText) {
+          userInput = classifierResult.modifiedInputText;
+        }
+
         this.logger.printIntent(userInput, classifierResult);
       } catch (error) {
         this.logger.error("Error during intent classification:", error);

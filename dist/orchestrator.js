@@ -130,6 +130,9 @@ class MultiAgentOrchestrator {
         else {
             try {
                 classifierResult = await this.measureExecutionTime("Classifying user intent", () => this.classifier.classify(userInput, chatHistory));
+                if (classifierResult.modifiedInputText) {
+                    userInput = classifierResult.modifiedInputText;
+                }
                 this.logger.printIntent(userInput, classifierResult);
             }
             catch (error) {

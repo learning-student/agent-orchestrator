@@ -55,7 +55,8 @@ class AnthropicClassifier extends classifier_1.Classifier {
             if (this.errorAgent) {
                 return {
                     selectedAgent: this.errorAgent,
-                    confidence: 1
+                    confidence: 1,
+                    modifiedInputText: "User Input: " + inputText + "Error: " + JSON.stringify(error)
                 };
             }
             // Instead of returning a default result, we'll throw the error

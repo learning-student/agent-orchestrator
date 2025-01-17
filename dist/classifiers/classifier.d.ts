@@ -3,6 +3,7 @@ import { Agent } from "../agents/agent";
 export interface ClassifierResult {
     selectedAgent: Agent | null;
     confidence: number;
+    modifiedInputText?: string;
 }
 export type TextProcessor = (text: string) => string;
 /**

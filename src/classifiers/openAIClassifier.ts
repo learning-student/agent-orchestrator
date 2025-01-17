@@ -119,10 +119,11 @@ export class OpenAIClassifier extends Classifier {
       if (this.errorAgent) {
         return {
           selectedAgent: this.errorAgent,
-          confidence: 1
-        }
+          confidence: 1,
+          modifiedInputText: "User Input: " + inputText + "Error: " + JSON.stringify(error)
+         }
       }
-      
+
       throw error;
     }
   }
