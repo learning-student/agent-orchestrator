@@ -219,16 +219,25 @@ class MultiAgentOrchestrator {
         }
         catch (error) {
             this.logger.error("Error processing stream:", error);
-            this.errorHandler && this.errorHandler(error);
-            accumulatorTransform.end();
-            if (error instanceof Error) {
-                accumulatorTransform.destroy(error);
-            }
-            else if (typeof error === "string") {
-                accumulatorTransform.destroy(new Error(error));
+            if (this.errorHandler) {
+                for await (const chunk of this.errorHandler(error)) {
+                    accumulatorTransform.write(chunk);
+                    chunkCount++;
+                }
+                accumulatorTransform.end();
+                afterAgentDispatch && afterAgentDispatch();
             }
             else {
-                accumulatorTransform.destroy(new Error("An unknown error occurred"));
+                accumulatorTransform.end();
+                if (error instanceof Error) {
+                    accumulatorTransform.destroy(error);
+                }
+                else if (typeof error === "string") {
+                    accumulatorTransform.destroy(new Error(error));
+                }
+                else {
+                    accumulatorTransform.destroy(new Error("An unknown error occurred"));
+                }
             }
         }
     }

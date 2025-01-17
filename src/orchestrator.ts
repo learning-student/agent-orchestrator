@@ -555,9 +555,4 @@ export class MultiAgentOrchestrator {
   }
 }
 
-    return {
-      selectedAgent: this.getDefaultAgent(),
-      confidence: 0,
-    };
-  }
-}
+
