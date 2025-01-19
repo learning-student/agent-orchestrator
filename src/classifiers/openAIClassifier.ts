@@ -87,7 +87,7 @@ export class OpenAIClassifier extends Classifier {
       },
       {
         role: 'user',
-        content: filteredAndPreparedInput
+        content: "Users prompt: " + filteredAndPreparedInput
       }
     ];
 

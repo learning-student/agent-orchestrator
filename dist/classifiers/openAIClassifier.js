@@ -46,7 +46,7 @@ class OpenAIClassifier extends classifier_1.Classifier {
             },
             {
                 role: 'user',
-                content: filteredAndPreparedInput
+                content: "Users prompt: " + filteredAndPreparedInput
             }
         ];
         try {

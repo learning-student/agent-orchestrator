@@ -50,8 +50,8 @@ export abstract class Classifier {
     <INSTRUCTIONS>
     Your task is to find the most relevant agent based on the user's input and the agents' names and descriptions.
     
-    1. Analyze the user's input. (Take USER_INSTRUCTION into account while analyzing the user's input)
-    2. Create detailed operations list from the user's input, detailed instructions are in <OPERATION_SPECIFICATION>.
+    1. Analyze the user's prompt. (Take USER_INSTRUCTION into account while analyzing the user's prompt)
+    2. Create detailed operations list from the user's prompt, detailed instructions are in <OPERATION_SPECIFICATION>.
     3. Use the first not completed operations agent as "agentId"
     4. Put confidence as how confident you are in your selection. Aim for at least 0.9. (confidence is a number between 0 and 1)
 
