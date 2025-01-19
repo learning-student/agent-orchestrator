@@ -62,15 +62,10 @@ export abstract class Classifier {
     </INSTRUCTIONS>
 
       <OPERATION_SPECIFICATION>
-            If user specifies multiple operations at once, you must use the first operation that has not completed.
-            Use chain-of-thought to determine the first operation that has not completed. 
-            Split the operations in the conversation into sub-operations, put them in "operations" parameter with following format.
+            From the users input, create a list of operations that the user wants to perform in the following format.
             [{"operation": "operation_name", "agent": "agent_name that matches with the operation", "completed": false}]
-            For each operatoion, look for the conversation, use chain-of-thoughts to determine if it has been completed or not.
-            After finding all the operations, return the first operation that has not completed.
-            ********************
-            Definition for being completed: In the conversation from the assistant messages hints that the operation is completed.
-            ********************
+            For each operatoion, look for the conversation, look for the assistant messages to determine if it has been completed or not.
+            If the operation is completed, set the "completed" parameter to true.
      </OPERATION_SPECIFICATION>
     
     
