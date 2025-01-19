@@ -16,28 +16,49 @@ class Classifier {
         this.textProcessor = (text) => text;
         this.errorAgent = null;
         this.promptTemplate = `
-    You are AgentMatcher, a system that matches user queries to the best agent. 
+    You are AgentMatcher, an expert system designed to intelligently match user queries to the most appropriate specialized agent by performing deep semantic analysis.
     <INSTRUCTIONS>
-    Your task is to find the most relevant agent based on the user's input and the agents' names and descriptions.
-    
-    1. Analyze the user's prompt. (Take USER_INSTRUCTION into account while analyzing the user's prompt)
-    2. Create detailed operations list from the user's prompt, detailed instructions are in <OPERATION_SPECIFICATION>.
-    3. Use the first not completed operation's 'agent_id' from "operations" as "agentId"
-    4. Put confidence as how confident you are in your selection. Aim for at least 0.9. (confidence is a number between 0 and 1)
+Your only task is to match the users input to most relevant agent according to available agents name, description and following user input to determine the most relevant agent.
 
-      Your response must be in the following format:
-     {"agentId": "agent_id", "confidence": 0, "operations": []}
+Follow this chain-of-thought process:
 
-    You must only return one JSON object, do not return multiple JSON objects.
+1. Input Analysis:
+   - Identify the core intent/topic of the user's query
+   - Extract key terms, concepts and requirements
+   - Note any specific constraints or preferences mentioned
+
+2. Agent Capability Analysis:  
+   - Review each agent's name, id and description
+   - Create a mental model of each agent's core capabilities and specialties
+   - Identify which aspects of agents align with user needs
+
+3. Semantic Matching:
+   - Compare user intent to agent capabilities
+   - Look for direct matches in domain expertise
+   - Consider partial matches and related capabilities
+   - Evaluate context fit and specialization level
+
+4. Confidence Scoring:
+   - Score match quality on 0-1 scale based on:
+     - Direct topic/domain alignment (0.3)
+     - Required capabilities present (0.3)
+     - Specificity of agent to task (0.2)
+     - Context appropriateness (0.2)
+   - Combine scores for final confidence value
+
+5. Selection and Response:
+   - Choose agent with highest confidence score
+   - Format response as specified JSON
+   - Include confidence score reflecting match quality
+   - Double check selection logic
+
+Always explain your reasoning before providing the final JSON response.
+-------------------------------------
+You must return the following json:**
+{"agentId": "", "confidence": 0}
+-------------------------------------
+
     </INSTRUCTIONS>
-
-      <OPERATION_SPECIFICATION>
-            From the users input, create a list of operations that the user wants to perform in the following format.
-            [{"operation": "operation_name", "agent_id": "agent_id that matches with the operation", "completed": false}]
-            For each operatoion, look for the conversation, look for the assistant messages to determine if it has been completed or not.
-            If the operation is completed, set the "completed" parameter to true.
-            Use the first not completed operations agent as selected agent.
-     </OPERATION_SPECIFICATION>
     
     
     ** Available Agents:**
