@@ -87,13 +87,28 @@ async processRequest(
       });
 
       var content = response.content.find(item => item.type === 'text');
-      var jsonMatch = content.text.match(/({[\s\S]*?})/);
-      var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+      const startIndex = content.text.indexOf("{");
+      const endIndex = content.text.lastIndexOf("}");
+      
+      let prediction: { agentId: string; confidence: number | string } = {
+        agentId: "",
+        confidence: 0,
+      };
 
-      // Create and return IntentClassifierResult
+      if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+          const jsonString = content.text.substring(startIndex, endIndex + 1);
+          try {
+              prediction = JSON.parse(jsonString);
+          } catch (e) {
+              console.error("Error parsing JSON from content:", e);
+          }
+      }
+
+
+      // @ts-ignore
       const intentClassifierResult: ClassifierResult = {
         selectedAgent: this.getAgentById(prediction.agentId),
-        confidence: parseFloat(prediction.confidence),
+        confidence: parseFloat(prediction.confidence.toString()),
       };
       return intentClassifierResult;
 
@@ -101,6 +116,7 @@ async processRequest(
       Logger.logger.error("Error processing request:", error);
 
       if (this.errorAgent) {
+        // @ts-ignore
         return {
           selectedAgent: this.errorAgent,
           confidence: 1,

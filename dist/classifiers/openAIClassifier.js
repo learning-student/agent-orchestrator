@@ -36,7 +36,7 @@ class OpenAIClassifier extends classifier_1.Classifier {
      */
     /* eslint-disable @typescript-eslint/no-unused-vars */
     async processRequest(inputText, chatHistory) {
-        var _a, _b;
+        var _a, _b, _c;
         var input = (typeof inputText === 'string' ? [inputText] : inputText);
         var filteredAndPreparedInput = input.filter(part => part.type === 'text');
         const messages = [
@@ -58,12 +58,28 @@ class OpenAIClassifier extends classifier_1.Classifier {
                 temperature: this.inferenceConfig.temperature,
                 top_p: this.inferenceConfig.topP,
             });
-            var content = (_b = (_a = response.choices[0]) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.content;
-            var jsonMatch = content.match(/({[\s\S]*?})/);
-            var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+            const content = ((_c = (_b = (_a = response === null || response === void 0 ? void 0 : response.choices) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.message) === null || _c === void 0 ? void 0 : _c.content) || "";
+            console.log("content from match", content);
+            // Find the first '{' and the last '}'
+            const startIndex = content.indexOf("{");
+            const endIndex = content.lastIndexOf("}");
+            let prediction = {
+                agentId: "",
+                confidence: 0
+            };
+            if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+                // Extract the JSON substring
+                const jsonString = content.substring(startIndex, endIndex + 1);
+                try {
+                    prediction = JSON.parse(jsonString);
+                }
+                catch (e) {
+                    console.error("Error parsing JSON from content:", e);
+                }
+            }
             const intentClassifierResult = {
                 selectedAgent: this.getAgentById(prediction.agentId),
-                confidence: parseFloat(prediction.confidence)
+                confidence: parseFloat(prediction.confidence.toString())
             };
             return intentClassifierResult;
         }

@@ -101,18 +101,36 @@ export class OpenAIClassifier extends Classifier {
         max_tokens: this.inferenceConfig.maxTokens,
         temperature: this.inferenceConfig.temperature,
         top_p: this.inferenceConfig.topP,
-      });
+    });
 
-      var content = response.choices[0]?.message?.content;
-      var jsonMatch = content.match(/({[\s\S]*?})/);
-      var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
-
-      const intentClassifierResult: ClassifierResult = {
-        selectedAgent: this.getAgentById(prediction.agentId),
-        confidence: parseFloat(prediction.confidence)
+      const content = response?.choices?.[0]?.message?.content || "";
+      console.log("content from match", content);
+      
+      // Find the first '{' and the last '}'
+      const startIndex = content.indexOf("{");
+      const endIndex = content.lastIndexOf("}");
+      
+      let prediction : {agentId: string, confidence: number|string} = {
+        agentId: "",
+        confidence: 0
       };
 
-      return intentClassifierResult;
+      if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+          // Extract the JSON substring
+          const jsonString = content.substring(startIndex, endIndex + 1);
+          try {
+              prediction = JSON.parse(jsonString);
+          } catch (e) {
+              console.error("Error parsing JSON from content:", e);
+          }
+      }
+
+      const intentClassifierResult = {
+        selectedAgent: this.getAgentById(prediction.agentId),
+        confidence: parseFloat(prediction.confidence.toString())
+      }
+
+      return intentClassifierResult as ClassifierResult;
 
     } catch (error) {
       Logger.logger.error("Error processing request:", error);
@@ -121,7 +139,7 @@ export class OpenAIClassifier extends Classifier {
           selectedAgent: this.errorAgent,
           confidence: 1,
           modifiedInputText: "User Input: " + inputText + "Error: " + JSON.stringify(error)
-         }
+         } as ClassifierResult;
       }
 
       throw error;

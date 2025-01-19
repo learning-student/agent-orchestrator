@@ -41,18 +41,32 @@ class AnthropicClassifier extends classifier_1.Classifier {
                 top_p: this.inferenceConfig.topP,
             });
             var content = response.content.find(item => item.type === 'text');
-            var jsonMatch = content.text.match(/({[\s\S]*?})/);
-            var prediction = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
-            // Create and return IntentClassifierResult
+            const startIndex = content.text.indexOf("{");
+            const endIndex = content.text.lastIndexOf("}");
+            let prediction = {
+                agentId: "",
+                confidence: 0,
+            };
+            if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+                const jsonString = content.text.substring(startIndex, endIndex + 1);
+                try {
+                    prediction = JSON.parse(jsonString);
+                }
+                catch (e) {
+                    console.error("Error parsing JSON from content:", e);
+                }
+            }
+            // @ts-ignore
             const intentClassifierResult = {
                 selectedAgent: this.getAgentById(prediction.agentId),
-                confidence: parseFloat(prediction.confidence),
+                confidence: parseFloat(prediction.confidence.toString()),
             };
             return intentClassifierResult;
         }
         catch (error) {
             logger_1.Logger.logger.error("Error processing request:", error);
             if (this.errorAgent) {
+                // @ts-ignore
                 return {
                     selectedAgent: this.errorAgent,
                     confidence: 1,

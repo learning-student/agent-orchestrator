@@ -16,32 +16,45 @@ class Classifier {
         this.textProcessor = (text) => text;
         this.errorAgent = null;
         this.promptTemplate = `
-You are AgentMatcher, a system that matches user queries to the best agent. 
-Your task is to find the most relevant agent based on the user's input and the agents' names and descriptions. 
-Return the following JSON: 
-{"agentId": "", "confidence": 0}
-- agentId: the ID of the selected agent.
-- confidence: a number between 0 and 1 indicating your confidence in the selection.
-1. Analyze the user's input.
-2. Check the available agents.
-3. Find the best match.
-4. Return the selected agent.
+    You are AgentMatcher, a system that matches user queries to the best agent. 
+    <INSTRUCTIONS>
+    Your task is to find the most relevant agent based on the user's input and the agents' names and descriptions.
+    
+    1. Analyze the user's input.
+    2. Create sub_operations from the user's input, detailed instructions are in <SUB_OPERATION_SPECIFICATION>.
+    3. Use the first not completed operations agent as "agentId"
+    4. Put confidence as how confident you are in your selection. Aim for at least 0.9. (confidence is a number between 0 and 1)
 
-** Available Agents:**
-<AGENTS>
-{{AGENT_DESCRIPTIONS}}
-</AGENTS>
+      Your response must be in the following format:
+      {"agentId": "agent_id", "confidence": 0, "sub_operations": []}
 
-** Message History:**
-<HISTORY>
-{{HISTORY}}
-</HISTORY>
+    </INSTRUCTIONS>
 
-<USER_INPUT>
-{{USER_INPUT}}
-</USER_INPUT>
-
-`;
+      <SUB_OPERATION_SPECIFICATION>
+            If user specifies multiple operations at once, you must use the first operation that has not completed.
+            Use chain-of-thought to determine the first operation that has not completed. 
+            Split the operations in the conversation into sub-operations, put them in "sub_operations" parameter with following format.
+            [{"operation": "operation_name", "agent": "agent_name that matches with the operation", "completed": false}]
+            For each operatoion, look for the conversation, use chain-of-thoughts to determine if it has been completed or not.
+            After finding all the operations, return the first operation that has not completed.
+     </SUB_OPERATION_SPECIFICATION>
+    
+    
+    ** Available Agents:**
+    <AGENTS>
+    {{AGENT_DESCRIPTIONS}}
+    </AGENTS>
+    
+    ** Message History:**
+    <HISTORY>
+    {{HISTORY}}
+    </HISTORY>
+    
+    <USER_INPUT>
+    {{USER_INPUT}}
+    </USER_INPUT>
+    
+    `;
     }
     setErrorAgent(errorAgent) {
         this.errorAgent = errorAgent;
