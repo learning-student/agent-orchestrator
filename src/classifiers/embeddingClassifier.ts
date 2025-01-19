@@ -2,99 +2,53 @@ import { ConversationMessage } from "../types";
 import { Logger } from "../utils/logger";
 import { Classifier, ClassifierResult } from "./classifier";
 import { Agent } from "../agents/agent";
-import OpenAI from "openai";
-import md5 from 'crypto-js/md5';
-interface AgentInfo {
-  name: string;
-  description: string;
-  exampleQAs: Array<{
-    question: string;
-    answer: string;
-  }>;
-}
+import * as faiss from "faiss-node";
 
 export interface EmbeddingClassifierOptions {
-  openaiClient: OpenAI;
-  embeddingCreator: (text: string) => Promise<number[]>;
-  // Minimum confidence threshold for classification (0-1)
+  embeddingModel: string;
   minConfidence?: number;
-  // Model to use for embeddings (defaults to text-embedding-3-small)
-  model?: string;
-  // Cache options
-  cacheOptions?: {
-    ttl?: number; // Time to live in seconds
-    maxSize?: number; // Maximum size in bytes
-    path?: string; // Cache directory path
-  };
+  dimension?: number;
 }
 
 export class EmbeddingClassifier extends Classifier {
-  private openai: OpenAI;
   private minConfidence: number;
-  private agentEmbeddings: Map<string, number[]> = new Map();
+  private agentEmbeddings: Float32Array[] = [];
+  private agentNames: string[] = [];
   private registeredAgents: Map<string, Agent> = new Map();
-  private exampleEmbeddings: Map<string, number[]> = new Map();
-  private embeddingCreator: (text: string) => Promise<number[]>;
+  private index: faiss.IndexFlatIP;
+  private dimension: number = 0;
+  private modelName: string;
 
   constructor(options: EmbeddingClassifierOptions) {
     super();
-    this.openai = options.openaiClient;
     this.minConfidence = options.minConfidence ?? 0.7;
-    this.embeddingCreator = options.embeddingCreator;
+    Logger.logger.info(`Using Ollama embedding model: ${options.embeddingModel}`);
+    this.modelName = options.embeddingModel;
+    this.dimension = options.dimension ?? 0;
+    this.index = this.dimension > 0 ? new faiss.IndexFlatIP(this.dimension) : undefined;
   }
 
   /**
-   * Generate example Q&As for an agent using its description and system prompt
+   * Get embeddings from Ollama
    */
-  private async generateExampleQAs(agent: Agent): Promise<Array<{ question: string; answer: string }>> {
-    try {
-      const prompt = `Based on the following agent description and capabilities, generate 5 example question-answer pairs that this agent would be best suited to handle. Format as JSON array.
+  private async getEmbeddings(text: string): Promise<Float32Array> {
+    const response = await fetch('http://localhost:11434/api/embeddings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: this.modelName,
+        prompt: text
+      })
+    });
 
-Description: ${agent.description}
-Capabilities: ${agent.name} is designed to ${agent.description}
-
-Generate diverse examples covering different aspects of the agent's capabilities.`;
-
-      const response = await this.openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a helpful assistant that generates example question-answer pairs for an agent based on its description and capabilities." },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.7,
-        tool_choice: "required",
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "generate_example_qas",
-              description: "Generate example Q&As for an agent",
-              parameters: {
-                type: "object", properties: {
-                  question_and_answers: {
-                    type: "array", items: {
-                      type: "object", properties: {
-                        question: { type: "string" },
-                        answer: { type: "string" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ]
-      });
-
-      var toolCall = response.choices[0]?.message?.tool_calls?.[0];
-
-      var args=  JSON.parse(toolCall.function.arguments);
-      console.log("args",args);
-      return args.question_and_answers;
-    } catch (error) {
-      Logger.logger.error("Error generating example Q&As:", error);
-      return [];
+    if (!response.ok) {
+      throw new Error(`Ollama embedding request failed: ${response.statusText}`);
     }
+
+    const result = await response.json();
+    return new Float32Array(result.embedding);
   }
 
   /**
@@ -102,21 +56,24 @@ Generate diverse examples covering different aspects of the agent's capabilities
    */
   async registerAgent(agentId: string, agent: Agent): Promise<void> {
     this.registeredAgents.set(agentId, agent);
+    this.agentNames.push(agentId);
 
-    // Generate example Q&As
-    const exampleQAs = await this.generateExampleQAs(agent);
+    // Get agent description text
+    const agentText = `${agent.description}`;
 
-    // Get embeddings for examples
-    for (const qa of exampleQAs) {
-      const embedding = await this.getEmbedding(
-        `Question: ${qa.question}\nAnswer: ${qa.answer}`
-      );
-      const key = `${agentId}_example_${md5(qa.question).toString()}`;
-      this.exampleEmbeddings.set(key, embedding);
+    // Get embeddings from Ollama
+    const embeddingArray = await this.getEmbeddings(agentText);
+
+    // Initialize index if this is the first agent
+    if (!this.index) {
+      this.dimension = embeddingArray.length;
+      this.index = new faiss.IndexFlatIP(this.dimension);
     }
 
-    // Clear main embeddings cache to force recomputation
-    this.agentEmbeddings.clear();
+    this.index.add(Array.from(embeddingArray));
+    this.agentEmbeddings.push(embeddingArray);
+
+    Logger.logger.info(`Registered agent: ${agentId}`);
   }
 
   /**
@@ -134,53 +91,6 @@ Generate diverse examples covering different aspects of the agent's capabilities
   }
 
   /**
-   * Calculate cosine similarity between two vectors
-   */
-  private cosineSimilarity(vecA: number[], vecB: number[]): number {
-    const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
-    const magnitudeA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
-    const magnitudeB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
-    return dotProduct / (magnitudeA * magnitudeB);
-  }
-
-
-  /**
-   * Get embedding for a text using OpenAI's API with caching
-   */
-  private async getEmbedding(text: string): Promise<number[]> {
-    return this.embeddingCreator(text);
-  }
-
-  /**
-   * Update embeddings for all registered agents
-   */
-  private async updateAgentEmbeddings(): Promise<void> {
-    const agents = this.getRegisteredAgents();
-    for (const [agentId, agent] of agents.entries()) {
-      // Get agent info
-      const agentInfo: AgentInfo = {
-        name: agent.name || agentId,
-        description: agent.description || '',
-        exampleQAs: await this.generateExampleQAs(agent)
-      };
-
-      // Combine name and description for context
-      const agentText = `${agentInfo.name}. ${agentInfo.description}`;
-      const embedding = await this.getEmbedding(agentText);
-      this.agentEmbeddings.set(agentId, embedding);
-
-      // Get embeddings for examples
-      for (const qa of agentInfo.exampleQAs) {
-        const qaEmbedding = await this.getEmbedding(
-          `Question: ${qa.question}\nAnswer: ${qa.answer}`
-        );
-        const key = `${agentId}_example_${md5(qa.question).toString()}`;
-        this.exampleEmbeddings.set(key, qaEmbedding);
-      }
-    }
-  }
-
-  /**
    * Process a request to classify user input
    */
   async processRequest(
@@ -188,60 +98,42 @@ Generate diverse examples covering different aspects of the agent's capabilities
     chatHistory: ConversationMessage[]
   ): Promise<ClassifierResult> {
     try {
-      // Update agent embeddings if they haven't been cached
-      if (this.agentEmbeddings.size === 0) {
-        await this.updateAgentEmbeddings();
+      Logger.logger.debug(`Classifying message: ${inputText}`);
+
+      // Get embeddings from Ollama
+      const inputArray = await this.getEmbeddings(inputText);
+
+      // Search index for closest match
+      const k = 1;
+      const result = this.index.search(Array.from(inputArray), k);
+      
+      const confidence = (result.distances[0] / 100);
+      const bestMatchIndex = result.labels[0];
+      const selectedAgentId = this.agentNames[bestMatchIndex];
+      const selectedAgent = this.getAgentById(selectedAgentId);
+
+      if (!selectedAgent) {
+        throw new Error("No agents registered");
       }
 
-      // Get embedding for input text
-      const inputEmbedding = await this.getEmbedding(inputText);
-
-      // Calculate similarities with all agents and their examples
-      let bestMatch: { agentId: string; similarity: number } = {
-        agentId: '',
-        similarity: -1,
-      };
-
-      // Check similarity with agent descriptions and accumulate scores
-      const agentScores: { [key: string]: number } = {};
-      for (const [agentId, agentEmbedding] of this.agentEmbeddings) {
-        const similarity = this.cosineSimilarity(inputEmbedding, agentEmbedding);
-        agentScores[agentId] = (agentScores[agentId] || 0) + similarity;
-      }
-
-      // Check similarity with example Q&As and accumulate scores
-      for (const [key, exampleEmbedding] of this.exampleEmbeddings) {
-        const agentId = key.split('_example_')[0];
-        const similarity = this.cosineSimilarity(inputEmbedding, exampleEmbedding);
-        agentScores[agentId] = (agentScores[agentId] || 0) + similarity;
-      }
-
-      // Determine the best match based on accumulated scores
-      for (const [agentId, score] of Object.entries(agentScores)) {
-        if (score > bestMatch.similarity) {
-          bestMatch = { agentId, similarity: score };
+      if (confidence < this.minConfidence) {
+        return {
+          selectedAgent: null,
+          confidence: 1
         }
       }
 
-      console.log("bestMatch", bestMatch);  
-
-      // Check if the best match meets the minimum confidence threshold
-      if (bestMatch.similarity < this.minConfidence) {
-        throw new Error("No agent matched with sufficient confidence");
-      }
-
-      const selectedAgent = this.getAgentById(bestMatch.agentId);
-      if (!selectedAgent) {
-        throw new Error(`Invalid agent ID: ${bestMatch.agentId}`);
-      }
+      Logger.logger.info(
+        `[Classification] best_match='${selectedAgent.name}' score=${confidence}`
+      );
 
       return {
         selectedAgent,
-        confidence: bestMatch.similarity,
+        confidence: confidence,
       };
     } catch (error) {
       Logger.logger.error("Error processing request:", error);
       throw error;
     }
   }
-} 
+}
