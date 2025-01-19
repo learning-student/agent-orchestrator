@@ -39,7 +39,7 @@ class Classifier {
             For each operatoion, look for the conversation, use chain-of-thoughts to determine if it has been completed or not.
             After finding all the operations, return the first operation that has not completed.
             ********************
-            Definition for being completed: In the conversation from the user or assistant hints that the operation is completed.
+            Definition for being completed: In the conversation from the assistant messages hints that the operation is completed.
             ********************
      </OPERATION_SPECIFICATION>
     
