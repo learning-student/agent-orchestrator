@@ -20,7 +20,7 @@ class Classifier {
     <INSTRUCTIONS>
     Your task is to find the most relevant agent based on the user's input and the agents' names and descriptions.
     
-    1. Analyze the user's input.
+    1. Analyze the user's input. (Take USER_INSTRUCTION into account while analyzing the user's input)
     2. Create sub_operations from the user's input, detailed instructions are in <SUB_OPERATION_SPECIFICATION>.
     3. Use the first not completed operations agent as "agentId"
     4. Put confidence as how confident you are in your selection. Aim for at least 0.9. (confidence is a number between 0 and 1)
@@ -50,9 +50,9 @@ class Classifier {
     {{HISTORY}}
     </HISTORY>
     
-    <USER_INPUT>
-    {{USER_INPUT}}
-    </USER_INPUT>
+    <USER_INSTRUCTION>
+      {{USER_INSTRUCTION}}
+    </USER_INSTRUCTION>
     
     `;
     }
@@ -120,7 +120,7 @@ class Classifier {
             ...this.customVariables,
             AGENT_DESCRIPTIONS: this.agentDescriptions,
             HISTORY: this.history,
-            INSTRUCTIONS: this.instructions,
+            USER_INSTRUCTION: this.instructions,
         };
         this.systemPrompt = this.replaceplaceholders(this.promptTemplate, allVariables);
     }

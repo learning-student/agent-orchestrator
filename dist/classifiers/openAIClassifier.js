@@ -49,7 +49,6 @@ class OpenAIClassifier extends classifier_1.Classifier {
                 content: filteredAndPreparedInput
             }
         ];
-        console.log("promot for classifier", this.systemPrompt);
         try {
             const response = await this.client.chat.completions.create({
                 model: this.modelId,

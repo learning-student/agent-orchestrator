@@ -91,7 +91,6 @@ export class OpenAIClassifier extends Classifier {
       }
     ];
 
-   console.log("promot for classifier", this.systemPrompt);
    
 
     try {
