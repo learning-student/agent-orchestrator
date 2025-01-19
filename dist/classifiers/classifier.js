@@ -22,7 +22,7 @@ class Classifier {
     
     1. Analyze the user's prompt. (Take USER_INSTRUCTION into account while analyzing the user's prompt)
     2. Create detailed operations list from the user's prompt, detailed instructions are in <OPERATION_SPECIFICATION>.
-    3. Use the first not completed operations agent as "agentId"
+    3. Use the first not completed operation's 'agent_id' from "operations" as "agentId"
     4. Put confidence as how confident you are in your selection. Aim for at least 0.9. (confidence is a number between 0 and 1)
 
       Your response must be in the following format:
@@ -33,9 +33,10 @@ class Classifier {
 
       <OPERATION_SPECIFICATION>
             From the users input, create a list of operations that the user wants to perform in the following format.
-            [{"operation": "operation_name", "agent": "agent_name that matches with the operation", "completed": false}]
+            [{"operation": "operation_name", "agent_id": "agent_id that matches with the operation", "completed": false}]
             For each operatoion, look for the conversation, look for the assistant messages to determine if it has been completed or not.
             If the operation is completed, set the "completed" parameter to true.
+            Use the first not completed operations agent as selected agent.
      </OPERATION_SPECIFICATION>
     
     
