@@ -51,26 +51,27 @@ export abstract class Classifier {
     Your task is to find the most relevant agent based on the user's input and the agents' names and descriptions.
     
     1. Analyze the user's input. (Take USER_INSTRUCTION into account while analyzing the user's input)
-    2. Create sub_operations from the user's input, detailed instructions are in <SUB_OPERATION_SPECIFICATION>.
+    2. Create detailed operations list from the user's input, detailed instructions are in <OPERATION_SPECIFICATION>.
     3. Use the first not completed operations agent as "agentId"
     4. Put confidence as how confident you are in your selection. Aim for at least 0.9. (confidence is a number between 0 and 1)
 
       Your response must be in the following format:
-      {"agentId": "agent_id", "confidence": 0, "sub_operations": []}
+     {"agentId": "agent_id", "confidence": 0, "operations": []}
 
+    You must only return one JSON object, do not return multiple JSON objects.
     </INSTRUCTIONS>
 
-      <SUB_OPERATION_SPECIFICATION>
+      <OPERATION_SPECIFICATION>
             If user specifies multiple operations at once, you must use the first operation that has not completed.
             Use chain-of-thought to determine the first operation that has not completed. 
-            Split the operations in the conversation into sub-operations, put them in "sub_operations" parameter with following format.
+            Split the operations in the conversation into sub-operations, put them in "operations" parameter with following format.
             [{"operation": "operation_name", "agent": "agent_name that matches with the operation", "completed": false}]
             For each operatoion, look for the conversation, use chain-of-thoughts to determine if it has been completed or not.
             After finding all the operations, return the first operation that has not completed.
             ********************
             Definition for being completed: In the conversation from the user or assistant hints that the operation is completed.
             ********************
-     </SUB_OPERATION_SPECIFICATION>
+     </OPERATION_SPECIFICATION>
     
     
     ** Available Agents:**

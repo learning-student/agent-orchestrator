@@ -105,23 +105,23 @@ export class OpenAIClassifier extends Classifier {
       const content = response?.choices?.[0]?.message?.content || "";
       console.log("content from match", content);
       
-      // Find the first '{' and the last '}'
-      const startIndex = content.indexOf("{");
-      const endIndex = content.lastIndexOf("}");
-      
       let prediction : {agentId: string, confidence: number|string} = {
         agentId: "",
         confidence: 0
       };
 
-      if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
-          // Extract the JSON substring
-          const jsonString = content.substring(startIndex, endIndex + 1);
-          try {
-              prediction = JSON.parse(jsonString);
-          } catch (e) {
-              console.error("Error parsing JSON from content:", e);
-          }
+      // Use regex to find JSON object in content
+      const jsonMatch = content.match(/\{[^]*\}/);
+      
+      if (jsonMatch) {
+        try {
+          // Clean up the matched JSON string by removing trailing commas
+          const cleanedJson = jsonMatch[0].replace(/,(\s*[}\]])/g, '$1');
+          prediction = JSON.parse(cleanedJson);
+        } catch (e) {
+          console.error("Error parsing JSON from content:", e);
+          console.error("Problematic JSON string:", jsonMatch[0]);
+        }
       }
 
       const intentClassifierResult = {

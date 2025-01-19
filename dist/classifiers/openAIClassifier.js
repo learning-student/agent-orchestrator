@@ -59,21 +59,21 @@ class OpenAIClassifier extends classifier_1.Classifier {
             });
             const content = ((_c = (_b = (_a = response === null || response === void 0 ? void 0 : response.choices) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.message) === null || _c === void 0 ? void 0 : _c.content) || "";
             console.log("content from match", content);
-            // Find the first '{' and the last '}'
-            const startIndex = content.indexOf("{");
-            const endIndex = content.lastIndexOf("}");
             let prediction = {
                 agentId: "",
                 confidence: 0
             };
-            if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
-                // Extract the JSON substring
-                const jsonString = content.substring(startIndex, endIndex + 1);
+            // Use regex to find JSON object in content
+            const jsonMatch = content.match(/\{[^]*\}/);
+            if (jsonMatch) {
                 try {
-                    prediction = JSON.parse(jsonString);
+                    // Clean up the matched JSON string by removing trailing commas
+                    const cleanedJson = jsonMatch[0].replace(/,(\s*[}\]])/g, '$1');
+                    prediction = JSON.parse(cleanedJson);
                 }
                 catch (e) {
                     console.error("Error parsing JSON from content:", e);
+                    console.error("Problematic JSON string:", jsonMatch[0]);
                 }
             }
             const intentClassifierResult = {
