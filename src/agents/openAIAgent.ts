@@ -219,7 +219,6 @@ export class OpenAIAgent extends Agent {
         const stream = await this.openai.chat.completions.create({ ...options, stream: true });
 
         for await (const chunk of stream) {
-          console.log("chunk", chunk);
           const content = chunk.choices[0]?.delta?.content;
           const toolCalls = chunk.choices[0]?.delta?.tool_calls;
           const finishReason = chunk.choices[0]?.finish_reason;
@@ -255,7 +254,6 @@ export class OpenAIAgent extends Agent {
             if (toolBlock.length === 0 && selectedToolCallId !== '') {
               toolBlock.push({ id: selectedToolCallId, input: selectedToolCallInput, name: selectedToolCallName, type: 'tool_use' });
             }
-            console.log('toolBlock', toolBlock);
 
             if(toolBlock.length > 0){
               await this.toolConfig.useToolHandler({
