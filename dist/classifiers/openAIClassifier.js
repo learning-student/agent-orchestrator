@@ -38,7 +38,9 @@ class OpenAIClassifier extends classifier_1.Classifier {
     async processRequest(inputText, chatHistory) {
         var _a, _b, _c;
         var input = (typeof inputText === 'string' ? [inputText] : inputText);
-        var filteredAndPreparedInput = input.filter(part => part.type === 'text');
+        var filteredAndPreparedInput = input.filter(part => part.type === 'text')
+            .map(part => part.text)
+            .join('\n\n');
         const messages = [
             {
                 role: 'system',

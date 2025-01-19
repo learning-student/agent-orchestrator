@@ -46,7 +46,7 @@ export abstract class Classifier {
     this.textProcessor = (text: string) => text;
     this.errorAgent = null;
     this.promptTemplate = `
-    You are AgentMatcher, an expert system designed to intelligently match user queries to the most appropriate specialized agent by performing deep semantic analysis.
+   You are AgentMatcher, an expert system designed to intelligently match user queries to the most appropriate specialized agent by performing deep semantic analysis.
     <INSTRUCTIONS>
 Your only task is to match the users input to most relevant agent according to available agents name, description and following user input to determine the most relevant agent.
 

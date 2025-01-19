@@ -78,8 +78,9 @@ export class OpenAIClassifier extends Classifier {
   ): Promise<ClassifierResult> {
 
     var input = (typeof inputText === 'string' ? [inputText] : inputText) as ChatCompletionContentPart[];
-    var filteredAndPreparedInput = input.filter(part => part.type === 'text');
-
+    var filteredAndPreparedInput = input.filter(part => part.type === 'text')
+      .map(part => part.text)
+      .join('\n\n');
     const messages: OpenAI.ChatCompletionMessageParam[] = [
       {
         role: 'system',
