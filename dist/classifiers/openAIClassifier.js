@@ -60,6 +60,7 @@ class OpenAIClassifier extends classifier_1.Classifier {
                 top_p: this.inferenceConfig.topP,
             });
             const content = ((_c = (_b = (_a = response === null || response === void 0 ? void 0 : response.choices) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.message) === null || _c === void 0 ? void 0 : _c.content) || "";
+            console.log("full request", JSON.stringify(messages));
             console.log("content from match", content);
             let prediction = {
                 agentId: "",

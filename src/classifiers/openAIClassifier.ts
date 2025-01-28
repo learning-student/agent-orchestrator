@@ -104,6 +104,7 @@ export class OpenAIClassifier extends Classifier {
     });
 
       const content = response?.choices?.[0]?.message?.content || "";
+      console.log("full request", JSON.stringify(messages));
       console.log("content from match", content);
       
       let prediction : {agentId: string, confidence: number|string} = {
