@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isClassifierToolInput = exports.ParticipantRole = exports.AgentOverlapAnalyzer = exports.MultiAgentOrchestrator = exports.Logger = exports.InMemoryChatStorage = exports.ChatStorage = exports.Retriever = exports.EmbeddingClassifierOptions = exports.EmbeddingClassifier = exports.OpenAIClassifier = exports.AnthropicClassifier = exports.ChainAgent = exports.Classifier = exports.Agent = exports.AnthropicAgent = exports.OpenAIAgent = void 0;
+exports.isClassifierToolInput = exports.ParticipantRole = exports.AgentOverlapAnalyzer = exports.MultiAgentOrchestrator = exports.Logger = exports.InMemoryChatStorage = exports.ChatStorage = exports.Retriever = exports.OpenAIClassifier = exports.AnthropicClassifier = exports.ChainAgent = exports.Classifier = exports.Agent = exports.AnthropicAgent = exports.OpenAIAgent = void 0;
 var openAIAgent_1 = require("./agents/openAIAgent");
 Object.defineProperty(exports, "OpenAIAgent", { enumerable: true, get: function () { return openAIAgent_1.OpenAIAgent; } });
 var anthropicAgent_1 = require("./agents/anthropicAgent");
@@ -15,9 +15,6 @@ var anthropicClassifier_1 = require("./classifiers/anthropicClassifier");
 Object.defineProperty(exports, "AnthropicClassifier", { enumerable: true, get: function () { return anthropicClassifier_1.AnthropicClassifier; } });
 var openAIClassifier_1 = require("./classifiers/openAIClassifier");
 Object.defineProperty(exports, "OpenAIClassifier", { enumerable: true, get: function () { return openAIClassifier_1.OpenAIClassifier; } });
-var embeddingClassifier_1 = require("./classifiers/embeddingClassifier");
-Object.defineProperty(exports, "EmbeddingClassifier", { enumerable: true, get: function () { return embeddingClassifier_1.EmbeddingClassifier; } });
-Object.defineProperty(exports, "EmbeddingClassifierOptions", { enumerable: true, get: function () { return embeddingClassifier_1.EmbeddingClassifierOptions; } });
 var retriever_1 = require("./retrievers/retriever");
 Object.defineProperty(exports, "Retriever", { enumerable: true, get: function () { return retriever_1.Retriever; } });
 var chatStorage_1 = require("./storage/chatStorage");

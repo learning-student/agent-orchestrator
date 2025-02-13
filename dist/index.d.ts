@@ -6,7 +6,6 @@ export { ChainAgent, ChainAgentOptions } from './agents/chainAgent';
 export { AgentResponse } from './agents/agent';
 export { AnthropicClassifier, AnthropicClassifierOptions } from './classifiers/anthropicClassifier';
 export { OpenAIClassifier, OpenAIClassifierOptions } from "./classifiers/openAIClassifier";
-export { EmbeddingClassifier, EmbeddingClassifierOptions } from "./classifiers/embeddingClassifier";
 export { Retriever } from './retrievers/retriever';
 export { RetrievalOptions } from './retrievers/retriieverOptions';
 export { ChatStorage } from './storage/chatStorage';
