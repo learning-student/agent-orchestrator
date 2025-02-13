@@ -156,7 +156,7 @@ You must return the following json:**
   }
 
 
-   setTextProcessor(textProcessor: TextProcessor): void {
+   public setTextProcessor(textProcessor: TextProcessor): void {
     this.textProcessor = textProcessor;
    }
     /**
