@@ -47,7 +47,6 @@
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.7",
     "eslint-config-prettier": "^9.1.0",
-    "faiss-node": "^0.5.1",
     "keyv": "^5.2.1",
     "keyv-file": "^5.0.3",
     "natural": "^7.0.7",
